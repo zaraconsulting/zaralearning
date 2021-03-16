@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- ========== Meta Tags ========== -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="ZCLearning - Learn how to code">
+    <!-- ========== Page Title ========== -->
+    
+    <title>{% block title %}ZCLearning{% endblock title %}</title>
+    
+    <!-- ========== Favicon Icon ========== -->
+    <link rel="shortcut icon" href="{{ url_for('static', filename='assets/img/favicon.png') }}" type="image/x-icon">
+    <script src="https://js.stripe.com/v3/"></script>
+
+    <!-- ========== Start Stylesheet ========== -->
+    {% block styles %}
+        {% include './partials/styles.html' %}
+    {% endblock styles %}
+    <!-- ========== End Stylesheet ========== -->
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="assets/js/html5/html5shiv.min.js"></script>
+      <script src="assets/js/html5/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+    <!-- Preloader Start -->
+    <div class="se-pre-con"></div>
+    <!-- Preloader Ends -->
+
+    {% include './partials/header-secondary.html' %}
+
+    {% block body %}
+    <!-- Page content gets rendered here -->
+    {% endblock body %}
+
+    {% include './partials/footer.html' %}
+
+    <!-- jQuery Frameworks -->
+    {% block scripts %}
+    {% include './partials/scripts.html' %}
+    <script>
+        $('.stripe-subscribe').each((idx, el) => {
+            $(el).on('click', e => {
+                fetch('http://127.0.0.1:5000/shop/subscribe', {
+                    method: 'POST',
+                    mode: 'cors',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        priceId: '{{ subscription_basic }}'
+                    })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    console.log(data)
+                    stripe.redirectToCheckout({
+                        sessionId: data.sessionId
+                    }).then(() => console.log('Done'))
+                })
+            })
+        })
+    </script>
+    {% endblock scripts %}
+
+    </body>
+</html>

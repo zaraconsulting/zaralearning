@@ -1,0 +1,30 @@
+<div class="categories-area carousel-shadow thumb-cats default-padding">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 offset-lg-2">
+                <div class="site-heading text-center">
+                    <h5>Browse Categories</h5>
+                    <h2>Popular Topics to learn</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-full">
+        <div class="category-items thumb-categories-carousel owl-carousel owl-theme">
+            {% for cat in course_categories %}
+            <!-- Single Item -->
+            <div class="item">
+                <div class="title">
+                    <i class="flaticon-{{ cat.icon }}"></i>
+                    <h4><a href="#">{{ cat.name }}</a></h4>
+                </div>
+                <div class="thumb">
+                    <span>58 Courses</span>
+                    <img src="{{ url_for('static', filename='assets/img/800x600.png') }}" alt="Thumb">
+                </div>
+            </div>
+            <!-- End Single Item -->
+            {% endfor %}
+        </div>
+    </div>
+</div>

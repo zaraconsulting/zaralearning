@@ -1,0 +1,31 @@
+{% extends 'layout-secondary.html' %}
+{% block title %}{{ super() }} - Contact{% endblock title %}
+
+{% block body %}
+<!-- Start Breadcrumb 
+    ============================================= -->
+    <div class="breadcrumb-area bg-gray text-center shadow dark text-light bg-cover" style="background-image: url(static/assets/img/2440x1578.png);">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 offset-lg-2">
+                    <h1>Contact Us</h1>
+                    <ul class="breadcrumb">
+                        <li><a href="{{ url_for('main.home') }}"><i class="fas fa-home"></i> Home</a></li>
+                        <li class="active">Contact</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Breadcrumb -->
+
+    <!-- Start Contact Area
+    ============================================= -->
+    {% include './partials/contact/area.html' %}
+    <!-- End Contact -->
+
+    <!-- Star Google Maps
+    ============================================= -->
+    {% include './partials/contact/map.html' %}
+    <!-- End Google Maps -->
+{% endblock body %}

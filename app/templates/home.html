@@ -1,0 +1,40 @@
+{% extends 'layout-primary.html' %}
+{% block title %}{{ super() }} - Home{% endblock title %}
+
+{% block body %}
+    <!-- Start Banner -->
+    {% include './partials/home/banner.html' %}
+    <!-- End Banner -->
+
+    <!-- Star Categories Area -->
+    {% include './partials/home/categories.html' %}
+    <!-- End Categories -->
+
+    <!-- Star Courses Area -->
+    {% include './partials/home/courses.html' %}
+    <!-- End Courses Area -->
+
+    <!-- Start Fun Factor Area -->
+    {# {% include './partials/home/fun.html' %} #}
+    <!-- End Fun Factor Area -->
+
+    <!-- Star Why Choose Us Area -->
+    {# {% include './partials/home/why-choose-us.html' %} #}
+    <!-- End Why Choose Us -->
+
+    <!-- Star Register Area -->
+    {# {% include './partials/home/register.html' %} #}
+    <!-- End Register Area -->
+    
+    <!-- Star Testimonials -->
+    {% include './partials/home/testimonials.html' %}
+    <!-- End Testimonials Area -->
+
+    <!-- Star Blog Area -->
+    {# {% include './partials/home/blog.html' %} #}
+    <!-- End Blog Area -->
+
+    <!-- Star Footer -->
+    {% include './partials/footer.html' %}
+    <!-- End Footer-->
+{% endblock body %}

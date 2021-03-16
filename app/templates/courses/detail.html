@@ -1,0 +1,525 @@
+{% extends 'layout-secondary.html' %}
+{% block title %}{{ super() }} - Course{% endblock title %}
+
+{% block body %}
+<!-- Start Breadcrumb -->
+<div class="breadcrumb-area bg-gray text-center shadow dark text-light bg-cover" style="background-image: url({{ url_for('static', filename='assets/img/2440x1578.png') }});">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 offset-lg-2">
+                <h1>Course Details</h1>
+                <ul class="breadcrumb">
+                    <li><a href="{{ url_for('main.home') }}"><i class="fas fa-home"></i> Home</a></li>
+                    <li class="active"><a href="{{ url_for('courses.index') }}">Courses</a></li>
+                    {# <li class="active">Course</li> #}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Breadcrumb -->
+
+<!-- Start Course Details -->
+<div class="course-details-area default-padding">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 info">
+
+                <div class="top-info">
+                    <h2>{{ c.name }}</h2>
+                    <ul>
+                        <li>
+                            <div class="thumb">
+                                <img src="{{ url_for('static', filename='assets/img/100x100.png') }}" alt="Thumb">
+                            </div>
+                            <div class="info">
+                                <span>Teacher</span>
+                                <h5>John Kanel</h5>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="info">
+                                <span>Category</span>
+                                <h5>Mathematics</h5>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="info">
+                                <span>Last Update</span>
+                                <h5>January 24, 2021</h5>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="main-content">
+                    <div class="center-tabs">
+                        <ul id="tabs" class="nav nav-tabs">
+                            <li class="nav-item">
+                                <a href="" data-target="#tab1" data-toggle="tab" class="active nav-link">Overview</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="" data-target="#tab2" data-toggle="tab" class="nav-link">Curriculum</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="" data-target="#tab3" data-toggle="tab" class="nav-link">Advisor</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="" data-target="#tab4" data-toggle="tab" class="nav-link">Reviews</a>
+                            </li>
+                        </ul>
+                        <div id="tabsContent" class="tab-content">
+                            <div id="tab1" class="tab-pane overview fade active show">
+                                <h4>Course Description</h4>
+                                <p>
+                                    {{ c.description }}
+                                </p>
+                                <h4>Learning Objectives</h4>
+                                <ul>
+                                    <li>Be able to use simple tricks and techniques to make self-control easier.</li>
+                                    <li>Actually apply these strategies and make a deliberate effort to understand their effects</li>
+                                    <li>Have a huge advantage when it comes to sticking to your diet</li>
+                                    <li>Meeting your fitness goals, and leading a healthier lifestyle.</li>
+                                </ul>
+                            </div>
+                            <div id="tab2" class="tab-pane curriculum fade">
+                                <p>
+                                    Placing assured be if removed it besides on. Far shed each high read are men over day. Afraid we praise lively he suffer family estate is. Ample order up in of in ready. Timed blind had now those ought set often which. Or snug dull he show more true wish. No at many deny away miss evil. On in so indeed spirit an mother. Amounted old strictly but marianne admitted. People former is remove remain as.
+                                </p>
+                                <div class="accordion" id="accordionExample">
+                                    <div class="card">
+                                        <div class="card-header" id="headingOne">
+                                            <h5 class="mb-0" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                                    Java Programming
+                                            </h5>
+                                        </div>
+
+                                        <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+                                            <div class="card-body">
+                                                <ul>
+                                                    <li>
+                                                        <div class="left-content">
+                                                            <span>01</span>
+                                                            <i class="fas fa-play-circle"></i>
+                                                            <h5><a href="#">Introduction Of Java</a></h5>
+                                                        </div>
+                                                        <div class="right-content">
+                                                            <a href="#">Preview</a>
+                                                            <span><i class="fas fa-clock"></i> 19 minutes</span>
+                                                        </div>
+                                                    </li>
+                                                    <li>
+                                                        <div class="left-content">
+                                                            <span>02</span>
+                                                            <i class="fas fa-file"></i>
+                                                            <h5><a href="#">Basic Development</a></h5>
+                                                        </div>
+                                                        <div class="right-content">
+                                                            <i class="fas fa-lock"></i>
+                                                            <span><i class="fas fa-clock"></i> 11 minutes</span>
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card">
+                                        <div class="card-header" id="headingTwo">
+                                            <h5 class="mb-0 collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                                    PHP Programming
+                                            </h5>
+                                        </div>
+                                        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+                                            <div class="card-body">
+                                                <ul>
+                                                    <li>
+                                                        <div class="left-content">
+                                                            <span>01</span>
+                                                            <i class="fas fa-play-circle"></i>
+                                                            <h5><a href="#">Introduction</a></h5>
+                                                        </div>
+                                                        <div class="right-content">
+                                                            <a href="#">Preview</a>
+                                                            <span><i class="fas fa-clock"></i> 36 minutes</span>
+                                                        </div>
+                                                    </li>
+                                                    <li>
+                                                        <div class="left-content">
+                                                            <span>02</span>
+                                                            <i class="fas fa-play-circle"></i>
+                                                            <h5><a href="#">Benifits Of Function</a></h5>
+                                                        </div>
+                                                        <div class="right-content">
+                                                            <i class="fas fa-lock"></i>
+                                                            <span><i class="fas fa-clock"></i> 58 minutes</span>
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card">
+                                        <div class="card-header" id="headingThree">
+                                            <h5 class="mb-0 collapsed" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                                Python learning
+                                            </h5>
+                                        </div>
+                                        <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
+                                            <div class="card-body">
+                                                <ul>
+                                                    <li>
+                                                        <div class="left-content">
+                                                            <span>01</span>
+                                                            <i class="fas fa-play-circle"></i>
+                                                            <h5><a href="#">About Python</a></h5>
+                                                        </div>
+                                                        <div class="right-content">
+                                                            <a href="#">Preview</a>
+                                                            <span><i class="fas fa-clock"></i> 47 minutes</span>
+                                                        </div>
+                                                    </li>
+                                                    <li>
+                                                        <div class="left-content">
+                                                            <span>02</span>
+                                                            <i class="fas fa-play-circle"></i>
+                                                            <h5><a href="#">Python For Beginners</a></h5>
+                                                        </div>
+                                                        <div class="right-content">
+                                                            <i class="fas fa-lock"></i>
+                                                            <span><i class="fas fa-clock"></i> 44 minutes</span>
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="tab3" class="tab-pane advisor fade">
+                                <div class="advisor-items">
+                                    <!-- Single Item -->
+                                    <div class="single-item">
+                                        <div class="row">
+                                            <div class="col-lg-4 col-md-4 thumb">
+                                                <img src="{{ url_for('static', filename='assets/img/800x800.png') }}" alt="Advisor">
+                                            </div>
+                                            <div class="col-lg-8 col-md-8 info">
+                                                <h4>Jones Mark</h4>
+                                                <span>Java Programmer</span>
+                                                <div class="rating">
+                                                    <i class="fas fa-star"></i>
+                                                    <i class="fas fa-star"></i>
+                                                    <i class="fas fa-star"></i>
+                                                    <i class="fas fa-star"></i>
+                                                    <i class="fas fa-star-half-alt"></i>
+                                                    <span>4.8 (867)</span>
+                                                </div>
+                                                <p>
+                                                    Lasted my coming uneasy marked so should. Gravity letters it amongst herself dearest an windows by. Wooded ladies she basket season age her uneasy saw. Discourse unwilling am no described. 
+                                                </p>
+                                                <ul>
+                                                    <li><i class="fas fa-play"></i> 12 Courses</li>
+                                                    <li><i class="fas fa-comment-alt"></i> 867 Rating</li>
+                                                    <li><i class="fas fa-users"></i> 4k Students</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- End Single Item -->
+                                    <!-- Single Item -->
+                                    <div class="single-item">
+                                        <div class="row">
+                                            <div class="col-lg-4 col-md-4 thumb">
+                                                <img src="{{ url_for('static', filename='assets/img/800x800.png') }}" alt="Advisor">
+                                            </div>
+                                            <div class="col-lg-8 col-md-8 info">
+                                                <h4>Adom Mohaa</h4>
+                                                <span>Professor</span>
+                                                <div class="rating">
+                                                    <i class="fas fa-star"></i>
+                                                    <i class="fas fa-star"></i>
+                                                    <i class="fas fa-star"></i>
+                                                    <i class="fas fa-star"></i>
+                                                    <i class="fas fa-star-half-alt"></i>
+                                                    <span>4.8 (867)</span>
+                                                </div>
+                                                <p>
+                                                    Lasted my coming uneasy marked so should. Gravity letters it amongst herself dearest an windows by. Wooded ladies she basket season age her uneasy saw. Discourse unwilling am no described. 
+                                                </p>
+                                                <ul>
+                                                    <li><i class="fas fa-play"></i> 12 Courses</li>
+                                                    <li><i class="fas fa-comment-alt"></i> 867 Rating</li>
+                                                    <li><i class="fas fa-users"></i> 4k Students</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- End Single Item -->
+                                </div>
+                            </div>
+                            <div id="tab4" class="tab-pane reviews fade">
+                                <div class="row">
+                                    <div class="col-lg-4">
+                                        <div class="avg-ratings">
+                                            <h2>4.9</h2>
+                                            <div class="rating">
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star-half-alt"></i>
+                                            </div>
+                                            1,455 Ratings
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-8 rating-counter">
+                                        <ul>
+                                            <li>
+                                                <span>5 Star</span>
+                                                <span>13</span>
+                                                <div class="rating-bar"></div>
+                                            </li>
+                                            <li>
+                                                <span>4 Star</span>
+                                                <span>1</span>
+                                                <div class="rating-bar"></div>
+                                            </li>
+                                            <li>
+                                                <span>3 Star</span>
+                                                <span>0</span>
+                                                <div class="rating-bar"></div>
+                                            </li>
+                                            <li>
+                                                <span>2 Star</span>
+                                                <span>1</span>
+                                                <div class="rating-bar"></div>
+                                            </li>
+                                            <li>
+                                                <span>1 Star</span>
+                                                <span>0</span>
+                                                <div class="rating-bar"></div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="rating-provider">
+                                    <!-- Single Item -->
+                                    <div class="single-item">
+                                        <div class="thumb">
+                                            <img src="{{ url_for('static', filename='assets/img/800x800.png') }}" alt="Thumb">
+                                        </div>
+                                        <div class="info">
+                                            <div class="title">
+                                                <h4>Mira Jone</h4>
+                                                <span>15 December, 2020</span>
+                                            </div>
+                                            <div class="rating">
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star-half-alt"></i>
+                                            </div>
+                                            <div class="content">
+                                                <p>
+                                                    Agreeable law unwilling sir deficient curiosity instantly. Easy mind life fact with see has bore ten. Parish any chatty can elinor direct for former. Up as meant widow equal an share least. 
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Single Item -->
+                                    <!-- Single Item -->
+                                    <div class="single-item">
+                                        <div class="thumb">
+                                            <img src="{{ url_for('static', filename='assets/img/800x800.png') }}" alt="Thumb">
+                                        </div>
+                                        <div class="info">
+                                            <div class="title">
+                                                <h4>Mira Jone</h4>
+                                                <span>15 December, 2020</span>
+                                            </div>
+                                            <div class="rating">
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star-half-alt"></i>
+                                            </div>
+                                            <div class="content">
+                                                <p>
+                                                    Agreeable law unwilling sir deficient curiosity instantly. Easy mind life fact with see has bore ten. Parish any chatty can elinor direct for former. Up as meant widow equal an share least. 
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Single Item -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-lg-4 sidebar">
+                <!-- Single Item -->
+                <div class="item course-preview">
+                    <div class="thumb">
+                        <img src="{{ url_for('static', filename='assets/img/800x600.png') }}" alt="Thumb">
+                        <a href="https://www.youtube.com/watch?v=owhuBrGIOsE" class="popup-youtube light video-play-button item-center">
+                            <i class="fa fa-play"></i>
+                        </a>
+                    </div>
+                    <div class="content">
+                        <!-- <div class="top">
+                            <div class="pricce">
+                                <h2>$32</h2>
+                            </div>
+                            <div class="rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                                <span>4.8 (867)</span>
+                            </div>
+                        </div> -->
+                        <div class="course-includes">
+                            <ul>
+                                <li>
+                                    <i class="fas fa-copy"></i> Lectures <span class="float-right">8</span>
+                                </li>
+                                <li>
+                                    <i class="fas fa-clock"></i> Duration <span class="float-right">5.7 Hours</span>
+                                </li>
+                                <li>
+                                    <i class="fas fa-sliders-h"></i> Skill level <span class="float-right">All Levels</span>
+                                </li>
+                                <li>
+                                    <i class="fas fa-language"></i> Language <span class="float-right">English</span>
+                                </li>
+                                <li>
+                                    <i class="fas fa-users"></i> Students <span class="float-right">12K</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <a class="btn btn-theme effect btn-sm" href="#">Enroll Now</a>
+                    </div>
+                </div>
+                <!-- Single Item -->
+
+                <!-- Single Item -->
+                <div class="item course-category">
+                    <div class="content">
+                        <h4>Course categories</h4>
+                        <ul>
+                            <li>
+                                <a href="#">Java Programming <span>23</span></a>
+                            </li>
+                            <li>
+                                <a href="#">Social Science <span>0</span></a>
+                            </li>
+                            <li>
+                                <a href="#">Business Management <span>12</span></a>
+                            </li>
+                            <li>
+                                <a href="#">Online Learning <span>17</span></a>
+                            </li>
+                            <li>
+                                <a href="#">Course Management <span>0</span></a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- End Single Item -->
+
+                <!-- Single Item -->
+                <div class="item related-course">
+                    <div class="content">
+                        <h4>Related Courses</h4>
+                        <div class="related-courses-items">
+                            <div class="item">
+                                <div class="content">
+                                    <div class="thumb">
+                                        <a href="#">
+                                            <img src="{{ url_for('static', filename='assets/img/800x800.png') }}" alt="Thumb">
+                                        </a>
+                                    </div>
+                                    <div class="info">
+                                        <h5>
+                                            <a href="#">How to Make Beautiful Landscape photos?</a>
+                                        </h5>
+                                        <div class="rating">
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star-half-alt"></i>
+                                            <span>4.5 (1.3k)</span>
+                                        </div>
+                                        <div class="meta">
+                                            <i class="fas fa-user"></i> By <a href="#">Tami Bua</a> 
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="content">
+                                    <div class="thumb">
+                                        <a href="#">
+                                            <img src="{{ url_for('static', filename='assets/img/800x800.png') }}" alt="Thumb">
+                                        </a>
+                                    </div>
+                                    <div class="info">
+                                        <h5>
+                                            <a href="#">Learn PHP Programming From Scratch</a>
+                                        </h5>
+                                        <div class="rating">
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star-half-alt"></i>
+                                            <span>4.5 (6k)</span>
+                                        </div>
+                                        <div class="meta">
+                                            <i class="fas fa-user"></i> By <a href="#">John Bro</a> 
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="content">
+                                    <div class="thumb">
+                                        <a href="#">
+                                            <img src="{{ url_for('static', filename='assets/img/800x800.png') }}" alt="Thumb">
+                                        </a>
+                                    </div>
+                                    <div class="info">
+                                        <h5>
+                                            <a href="#">Profession paython learing</a>
+                                        </h5>
+                                        <div class="rating">
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star-half-alt"></i>
+                                            <span>4.5 (23k)</span>
+                                        </div>
+                                        <div class="meta">
+                                            <i class="fas fa-user"></i> By <a href="#">Spany Paul</a> 
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End Single Item -->
+                
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Course Details -->
+{% endblock body %}

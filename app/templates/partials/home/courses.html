@@ -1,0 +1,135 @@
+<div class="course-area default-padding-bottom bottom-less">
+
+    <!-- Fixed Shape -->
+    <div class="fixed-shape">
+        <img src="{{ url_for('static', filename='assets/img/shape/7.png') }}" alt="Shape">
+    </div>
+    <!-- End Fixed Shape -->
+
+    <div class="container">
+        <div class="heading-left">
+            <div class="row">
+                <div class="col-lg-5">
+                    <h5>Popular Courses</h5>
+                    <h2>
+                        Our Most Popular & Trending Online Courses
+                    </h2>
+                </div>
+                <div class="col-lg-6 offset-lg-1">
+                    <p>
+                        Everything melancholy uncommonly but solicitude inhabiting projection off. Connection stimulated
+                        estimating excellence an to impression.
+                    </p>
+                    <a class="btn btn-md btn-dark border" href="#">View All <i class="fas fa-plus"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="courses-box">
+            <div class="row">
+                <!-- Single item -->
+                {% for c in courses %}
+                <div class="single-item col-lg-4 col-md-6">
+                    <div class="item">
+                        <div class="thumb">
+                            <a href="#">
+                                <img src="{{ url_for('static', filename='assets/img/800x600.png') }}" alt="Thumb">
+                            </a>
+                        </div>
+                        <div class="info">
+                            <div class="top-info">
+                                <div class="rating">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star-half-alt"></i>
+                                    <span>4.8 (867)</span>
+                                </div>
+                                <!-- <div class="price">
+                                    $15.00
+                                </div> -->
+                            </div>
+                            <!-- <div class="meta">
+                                <ul>
+                                    <li>
+                                        <img src="{{ url_for('static', filename='assets/img/100x100.png') }}" alt="Advisor">
+                                        <a href="#">Busel park</a> in <a href="#">Programming</a>
+                                    </li>
+                                </ul>
+                            </div> -->
+                            <h4>
+                                <a href="#">{{ c.name }}</a>
+                            </h4>
+                            <p>
+                                {{ c.description|truncate(95) }}
+                            </p>
+                            <div class="bottom-info">
+                                <div class="course-info">
+                                    <ul>
+                                        <li><i class="fas fa-clock"></i> 08:27:00</li>
+                                        <li><i class="fas fa-list-ul"></i> 65</li>
+                                        <li><i class="fas fa-user"></i> 6K</li>
+                                    </ul>
+                                </div>
+                                <div class="enroll">
+                                    {% if current_user.is_authenticated %}
+                                        <a class="btn btn-theme effect btn-sm video-watch" href="{{ url_for('courses.detail', id=c.id) }}">Watch</a>
+                                        {# <button class="btn btn-theme effect btn-sm video-watch">Watch</button> #}
+                                    {% else %}
+                                        <button class="btn btn-theme effect btn-sm stripe-subscribe">Subscribe</button>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- <div class="single-item col-lg-4 col-md-6">
+                    <div class="item">
+                        <div class="thumb">
+                            <img src="{{ url_for('static', filename='assets/img/800x600.png') }}" alt="Thumb">
+                            <div class="price">
+                                <h5>Subscribe</h5>
+                            </div>
+                        </div>
+                        <div class="info">
+                            <div class="top-info">
+                                <div class="top-meta">
+                                    <ul>
+                                        <li><i class="fas fa-clock"></i> 45 Hours</li>
+                                        <li><i class="fas fa-list-ul"></i> 345</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <h4>
+                                <a href="#">{{ c.name }}</a>
+                            </h4>
+                            <div class="meta">
+                                <div class="author">
+                                    <img src="{{ url_for('static', filename='assets/img/100x100.png') }}" alt="Advisor">
+                                    <span><strong>Busel park</strong> in <a href="#">Web</a></span>
+                                </div>
+                            </div>
+                            <div class="bottom-info">
+                                <div class="course-info">
+                                    <i class="fas fa-user"></i> 6K
+                                </div>
+                                <div class="rating">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star-half-alt"></i>
+                                    <span>4.8 (867)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
+                {% endfor %}
+                <!-- End Single item -->
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,76 @@
+<!-- Start Header Top -->
+<div class="top-bar-area text-light transparent">
+    <div class="container">
+        <div class="row align-center">
+            <div class="col-lg-4 left-info">
+                <ul class="list">
+                    <li>
+                        Have any question? +123 456 7890
+                    </li>
+                </ul>
+            </div>
+            <div class="col-lg-4 logo text-center">
+                <a href="#"><img src="{{ url_for('static', filename='assets/img/logo-light.png') }}" alt="Logo"></a>
+            </div>
+            <div class="col-lg-4 right-info">
+                <div class="item-flex">
+                    {# <div class="social">
+                        <ul>
+                            <li>
+                                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                            </li>
+                            <li>
+                                <a href="#"><i class="fab fa-twitter"></i></a>
+                            </li>
+                            <li>
+                                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                            </li>
+                        </ul>
+                    </div> #}
+                    <div class="button">
+                        {% if current_user.is_authenticated %}
+                            <a href="{{ url_for('auth.logout') }}">Logout</a>
+                        {% else %}
+                            {% include "partials/auth-links.html" %}
+                        {% endif %} 
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Header Top -->
+
+<!-- Header -->
+<header>
+    <div class="container">
+        <div class="row">
+            <!-- Start Navigation -->
+            <nav id="mainNav" class="navbar logo-less navbar-default navbar-fixed white bootsnav on no-full nav-box no-background">
+
+                <div class="container">            
+
+                    <!-- Start Header Navigation -->
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-menu">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <a class="navbar-brand" href="{{ url_for('main.home') }}"><img src="{{ url_for('static', filename='assets/img/logo.png') }}" class="logo" alt="Logo"></a>
+                    </div>
+                    <!-- End Header Navigation -->
+
+                    <!-- Collect the nav links, forms, and other content for toggling -->
+                    <div class="collapse navbar-collapse" id="navbar-menu">
+                        <ul class="nav navbar-nav navbar-center" data-in="fadeInDown" data-out="fadeOutUp">
+                            {% include './partials/navigation-links.html' %}
+                        </ul>
+                    </div><!-- /.navbar-collapse -->
+                </div>   
+                
+            </nav>
+            <!-- End Navigation -->
+            
+        </div>
+    </div>
+</header>
+<!-- End Header -->

@@ -1,0 +1,58 @@
+{% extends 'layout-secondary.html' %}
+{% block title %}{{ super() }} - About{% endblock title %}
+
+{% block body %}
+<!-- Start Breadcrumb  -->
+<div class="breadcrumb-area bg-gray text-center shadow dark text-light bg-cover" style="background-image: url(static/assets/img/2440x1578.png);">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 offset-lg-2">
+                <h1>About Us</h1>
+                <ul class="breadcrumb">
+                    <li><a href="{{ url_for('main.home') }}"><i class="fas fa-home"></i> Home</a></li>
+                    <li class="active">About</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Breadcrumb -->
+
+<!-- Star About Area -->
+{% include './partials/about/about-area.html' %}
+<!-- End About Area -->
+
+<!-- Star Why Chose Us -->
+{% include './partials/about/why.html' %}
+<!-- End Why Chose Us -->
+
+<!-- Star Advisor Area -->
+{% include './partials/about/advisor.html' %}
+<!-- End Advisor Area -->
+
+<!-- Start Video Area -->
+<div class="video-area padding-xl text-center bg-fixed text-light shadow dark-hard" style="background-image: url(static/assets/img/2440x1578.png);">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 offset-lg-2">
+                <div class="video-heading">
+                    <div class="content">
+                        <h2>Take a short tour in our campus</h2>
+                        <p>
+                            Tolerably behaviour may admitting daughters offending her ask own. Praise effect wishes change way and any wanted. Lively use looked latter regard had. Do he it part more last in. Merits ye if mr narrow points. Melancholy particular devonshire alteration it favourable appearance
+                        </p>
+                    </div>
+                    <a class="popup-youtube relative video-play-button" href="https://www.youtube.com/watch?v=8GQTt50izkg">
+                        <i class="fa fa-play"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Video Area -->
+
+<!-- Star Gallery -->
+{% include './partials/about/star.html' %}
+<!-- End Gallery -->
+{% endblock body %}

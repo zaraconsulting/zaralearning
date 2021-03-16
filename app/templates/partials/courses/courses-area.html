@@ -1,0 +1,76 @@
+<div class="courses-area default-padding">
+    <div class="container">
+        <div class="courses-items">
+            <div class="row">
+                {% for c in courses %}
+                <!-- Single item -->
+                <div class="single-item col-lg-4 col-md-6">
+                    <div class="item">
+                        <div class="thumb">
+                            <img src="{{ url_for('static', filename='assets/img/800x600.png') }}" alt="Thumb">
+                            <div class="course-info">
+                                <ul>
+                                    <li><i class="fas fa-clock"></i> 45 Hours</li>
+                                    <li><i class="fas fa-list-ul"></i> 345</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <!-- <div class="top-info">
+                            <div class="meta">
+                                <ul>
+                                    <li>
+                                        <img src="{{ url_for('static', filename='assets/img/100x100.png') }}" alt="Advisor">
+                                        <a href="#">Busel park</a> in <a href="#">Web</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div> -->
+                        <div class="info">
+                            <div class="price-rating">
+                                <div class="rating">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star-half-alt"></i>
+                                    <span>(245)</span>
+                                </div>
+                                {# <div class="price">
+                                    Free
+                                </div> #}
+                            </div>
+                            <h4>
+                                <a href="{{ url_for('courses.detail') }}">{{ c.name }}</a>
+                            </h4>
+                            <div class="bottom">
+                                <ul>
+                                    <li><i class="fas fa-user"></i> 8K</li>
+                                </ul>
+                                <a href="#"><!--<i class="fas fa-shopping-cart"></i>-->Subscribe</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End Single item -->
+                {% endfor %}
+            </div>
+
+            <!-- Pagination -->
+            <div class="row">
+                <div class="col-md-12 pagi-area text-center">
+                    <nav aria-label="navigation">
+                        <ul class="pagination">
+                            <li class="page-item"><a class="page-link" href="#"><i
+                                        class="fas fa-angle-double-left"></i></a></li>
+                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                            <li class="page-item"><a class="page-link" href="#">2</a></li>
+                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                            <li class="page-item"><a class="page-link" href="#"><i
+                                        class="fas fa-angle-double-right"></i></a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
