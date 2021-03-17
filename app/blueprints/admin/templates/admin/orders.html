@@ -1,0 +1,80 @@
+{% extends 'admin/layout.html' %}
+
+{% block body %}
+<div class="container-fluid">
+    <h1 class="mt-4">Dashboard</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item active">Orders</li>
+    </ol>
+
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-shopping-cart mr-1"></i>
+            View Orders
+        </div>
+        <!-- ORDERS FORM : begin -->
+
+        <!-- <div class="card-body">
+            <div class="table-responsive">
+                <h5>Create an Order</h5>
+                <form class="form-inline" action="{{ url_for('admin.create_order') }}" method="POST">
+                    <div class="form-group custom-form">
+                        <input type="text" name="order_code" id="" class="form-control" placeholder="Order Code">
+                        <input type="text" class="form-control" name="discount" id="" placeholder="Order %">
+                        <input type="submit" class="btn btn-outline-primary" id="" value="Create Order">
+                    </div>
+                </form>
+            </div>
+        </div> -->
+
+        <!-- ORDERS FORM : end -->
+
+        <!-- ORDERS TABLE : begin -->
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Order Date</th>
+                            <th>Order No.</th>
+                            <th>Customer</th>
+                            <th>Coupon</th>
+                            {% if (current_user.role.rank < 4) %}<th></th>{% endif %}
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th>Order Date</th>
+                            <th>Order No.</th>
+                            <th>Customer</th>
+                            <th>Coupon</th>
+                            {% if (current_user.role.rank < 4) %}<th></th>{% endif %}
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                        {% for o in orders %}
+                            <tr>
+                                <td>{{ o.order_date }}</td>
+                                <td>{{ o.order_id }}</td>
+                                <td>{{ '{}, {} ({})'.format(o.c_last_name, o.c_first_name, o.c_email) }}</td>
+                                <td>{{ o.coupon.text }}</td>
+                                {% if (current_user.role.rank < 4) %}
+                                <td style="text-align: center;">
+                                    <span class="float-right delete-icon">
+                                        <a href="{{ url_for('admin.delete_order', id=o.id) }}">
+                                            <i class="fa fa-trash-alt text-danger"></i>
+                                        </a>
+                                    </span>
+                                </td>
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- ORDERS TABLE : end -->
+    </div>
+</div>
+{% endblock %}

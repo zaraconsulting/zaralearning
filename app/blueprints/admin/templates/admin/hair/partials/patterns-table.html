@@ -1,0 +1,52 @@
+<div class="card-body">
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
+            <thead>
+                <tr>
+                    <!-- <th>ID</th> -->
+                    <th></th>
+                    <th>Name</th>
+                    <th>Image</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tfoot>
+                <tr>
+                    <!-- <th>ID</th> -->
+                    <th></th>
+                    <th>Name</th>
+                    <th>Image</th>
+                    <th></th>
+                </tr>
+            </tfoot>
+            <tbody>
+                {% for p in patterns %}
+                    <tr>
+                        {% if current_user.role.rank < 4 %}
+                        <td style="text-align: center;">
+                            <span class="edit-icon">
+                                <a href="{{ url_for('admin.edit_hair_pattern', id=p.id) }}">
+                                    <i class="far fa-edit text-info"></i>
+                                </a>
+                            </span>
+                        </td>
+                        {% endif %}
+                        <td>{{ p.name }}</td>
+                        <td>
+                            <img style="height: 200px;" class="img-fluid" src="{{ p.image }}" alt="{{ p.name }}">
+                        </td>
+                        {% if current_user.role.rank < 3 %}
+                        <td style="text-align: center;">
+                            <span class="delete-icon">
+                                <a href="{{ url_for('admin.delete_hair_pattern', id=p.id) }}">
+                                    <i class="fa fa-trash-alt text-danger"></i>
+                                </a>
+                            </span>
+                        </td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>

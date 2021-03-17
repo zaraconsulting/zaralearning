@@ -1,0 +1,40 @@
+{% extends 'admin/layout.html' %}
+
+{% block body %}
+<div class="container-fluid">
+    <h1 class="mt-4">Dashboard</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item active">Hair Tips</li>
+    </ol>
+
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-shopping-bag mr-1"></i>
+            Manage Hair Tips
+        </div>
+        <!-- HAIR TIPS FORM : begin -->
+        <div class="card-body">
+            <div class="table-responsive">
+                <h5>Create a Hair Tip</h5>
+                <form class="form-inline create-product-form" method="POST">
+                    {{ form.hidden_tag() }}
+                    <div class="form-group custom-form">
+                        {{ form.description(class="form-control", style="margin-right: 15px", placeholder="Description", cols="40", rows="4") }}
+                        {{ form.submit(class="btn btn-outline-primary") }}
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- HAIR TIPS FORM : end -->
+
+        <!-- HAIR TIPS TABLE : begin -->
+        {% include './admin/hair/partials/tips-table.html' %}
+        <!-- HAIR TIPS TABLE : end -->
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+{% endblock %}

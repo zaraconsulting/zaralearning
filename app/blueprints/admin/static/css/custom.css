@@ -1,0 +1,7 @@
+.custom-form input, .form-check  {
+    margin-right: 15px;
+}
+
+.form-control, input.btn, .check-padding {
+    margin-bottom: 15px;
+}

@@ -1,0 +1,72 @@
+{% extends 'admin/layout.html' %}
+
+{% block body %}
+<div class="container-fluid">
+    <h1 class="mt-4">Dashboard</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item active">Users</li>
+    </ol>
+
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-user mr-1"></i>
+            Manage Users
+        </div>
+        <!-- USERS FORM : begin -->
+        <div class="card-body">
+            <div class="table-responsive">
+                <h5>Create a User</h5>
+                <form class="form-inline create-user-form" method="POST">
+                    {{ form.hidden_tag() }}
+                    <div class="form-group custom-form">
+                        {{ form.first_name(class='form-control', placeholder="First Name") }}
+                        {{ form.last_name(class='form-control', placeholder="Last Name") }}
+                        {{ form.email(class='form-control', placeholder="Email Address") }}
+                        <!-- <input type="text" name="email" id="" class="form-control" placeholder="Type an email for the user"> -->
+                        <!-- <div class="form-check">
+                          <label class="form-check-label">
+                            <input type="checkbox" class="form-check-input" name="is_customer" id="" value="is_customer" disabled>
+                            is_customer
+                          </label>
+                        </div> -->
+                        {{ form.role(class="form-control", style="margin-right: 15px") }}
+                        <!-- <div class="form-group">
+                          <select class="form-control" name="role" id="" style="margin-right: 15px;">
+                            <option disabled selected>Select a role</option>
+                          </select>
+                        </div> -->
+                        <div class="form-check">
+                            <label class="form-check-label">
+                            <!-- <input type="checkbox" class="form-check-input" name="is_admin" id="" value="is_admin"> -->
+                            {# {{ form.is_admin(class="form-check-input") }} #}
+                            {# {{ form.is_admin.label }} #}
+                            </label>
+                        </div>
+                        <!-- <div class="form-check">
+                            <label class="form-check-label">
+                            <input type="checkbox" class="form-check-input" name="is_admin" id="" value="is_admin">
+                            is_admin
+                            </label>
+                        </div> -->
+                        {{ form.submit(class="btn btn-outline-primary") }}
+                        <!-- <input type="submit" class="btn btn-outline-primary" id="" value="Create User"> -->
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- USERS FORM : end -->
+
+        <!-- USERS TABLE : begin -->
+        {% include './admin/partials/users-table.html' %}
+        <!-- USERS TABLE : end -->
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+    $('.create-user-form #role').prepend('<option disabled selected>Select a role</option>');
+</script>
+{% endblock %}

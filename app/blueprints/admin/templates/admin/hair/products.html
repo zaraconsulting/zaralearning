@@ -1,0 +1,54 @@
+{% extends 'admin/layout.html' %}
+
+{% block body %}
+<div class="container-fluid">
+    <h1 class="mt-4">Dashboard</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item active">Products</li>
+    </ol>
+
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-shopping-bag mr-1"></i>
+            Manage Products
+        </div>
+        <!-- PRODUCTS FORM : begin -->
+        <div class="card-body">
+            <div class="table-responsive">
+                <h5>Create a Product</h5>
+                <form class="form-inline create-product-form" method="POST">
+                    {{ form.hidden_tag() }}
+                    <div class="form-group custom-form">
+                        {{ form.pattern(class="form-control", style="margin-right: 15px") }}
+                        {{ form.category(class="form-control", style="margin-right: 15px") }}
+                        {{ form.price(class='form-control', placeholder="Price") }}
+                        {{ form.length(class='form-control', placeholder="Hair Length") }}
+                        {#{{ form.bundle_length(class='form-control', placeholder="Bundle Length: optional") }}#}
+                        <!-- <div class="form-check">
+                            <label class="form-check-label">
+                            {# {{ form.is_admin(class="form-check-input") }} #}
+                            {# {{ form.is_admin.label }} #}
+                            </label>
+                        </div> -->
+                        {{ form.submit(class="btn btn-outline-primary") }}
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- PRODUCTS FORM : end -->
+
+        <!-- PRODUCTS TABLE : begin -->
+        {% include './admin/hair/partials/products-table.html' %}
+        <!-- PRODUCTS TABLE : end -->
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+    $('.create-product-form #pattern').prepend('<option disabled selected>Select a pattern</option>');
+    $('.create-product-form #category').prepend('<option disabled selected>Select a category</option>');
+</script>
+{% endblock %}

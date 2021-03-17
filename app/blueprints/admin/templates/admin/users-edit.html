@@ -1,0 +1,62 @@
+{% extends 'admin/layout.html' %}
+
+{% block body %}
+<div class="container-fluid">
+    <h1 class="mt-4">Dashboard</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item active">Users</li>
+    </ol>
+
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-user mr-1"></i>
+            Edit User
+        </div>
+        <!-- EDIT USER FORM : begin -->
+        <div class="card-body">
+            <div class="table-responsive">
+                <h5>Edit a User</h5>
+                <form class="form-inline edit-user-form" method="POST">
+                    {{ form.hidden_tag() }}
+                    <div class="form-group custom-form">
+                        {{ form.first_name(class='form-control', value=user.first_name) }}
+                        {{ form.last_name(class='form-control', value=user.last_name) }}
+                        {{ form.email(class='form-control', value=user.email) }}
+                        {{ form.role(class="form-control edit-role", style="margin-right: 15px") }}
+                        {% if current_user.is_admin %}
+                            <div class="form-check">
+                                <label class="form-check-label">
+                                    {{ form.is_admin(class='form-check-input edit-admin', style="margin-bottom: 15px") }}
+                                    {{ form.is_admin.label(style="margin-bottom: 15px") }}
+                              </label>
+                            </div>
+                        {% endif %}
+                        {{ form.submit(class="btn btn-outline-primary") }}
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- EDIT USER FORM : end -->
+
+        <!-- USERS TABLE : begin -->
+        {# {% include './admin/partials/users-table.html' %} #}
+        <!-- USERS TABLE : end -->
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+    // var roleOption = $(`#role option[value=${roleId}]`);
+    $('#role').val('{{ user.role_id }}')
+    var editAdmin = $('.edit-admin')[0]
+    
+    if ('{{ user.is_admin }}' === 'False') {
+        $(editAdmin).prop('checked', false)
+    } else{
+        $(editAdmin).prop('checked', true)
+    }
+</script>
+{% endblock %}

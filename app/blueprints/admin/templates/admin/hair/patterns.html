@@ -1,0 +1,50 @@
+{% extends 'admin/layout.html' %}
+
+{% block body %}
+<div class="container-fluid">
+    <h1 class="mt-4">Dashboard</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item active">Patterns</li>
+    </ol>
+
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-shopping-bag mr-1"></i>
+            Manage Patterns
+        </div>
+        <!-- PRODUCTS FORM : begin -->
+        <div class="card-body">
+            <div class="table-responsive">
+                <h5>Create a Pattern</h5>
+                <form class="form-inline create-pattern-form" enctype="multipart/form-data" action="{{ url_for('admin.hair_patterns') }}" method="POST">
+                    {{ form.hidden_tag() }}
+                    <div class="form-group custom-form">
+                        {{ form.name(class="form-control", placeholder="Hair Pattern Name") }}
+                        <div class="custom-file" style="margin-bottom: 15px">
+                            <input type="file" class="custom-file-input" id='image' name="image">
+                            <label for="image" class="custom-file-label">Choose an image</label>
+                        </div>
+                        {{ form.submit(class="btn btn-outline-primary") }}
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- PRODUCTS FORM : end -->
+
+        <!-- PRODUCTS TABLE : begin -->
+        {% include './admin/hair/partials/patterns-table.html' %}
+        <!-- PRODUCTS TABLE : end -->
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+    $('.custom-file-input').on("change", function() {
+        var fileName = $(this).val().split("\\").pop();
+        $(this).siblings('.custom-file-label').addClass("selected").html(fileName);
+    })
+</script>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends 'admin/layout.html' %}
+
+{% block body %}
+<div class="container-fluid">
+    <h1 class="mt-4">Dashboard</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item active">Hair Tips</li>
+    </ol>
+
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-user mr-1"></i>
+            Edit Hair Tip
+        </div>
+        <!-- HAIR TIP FORM : begin -->
+        <div class="card-body">
+            <div class="table-responsive">
+                <h5>Edit a Hair Tip</h5>
+                <form class="form-inline edit-user-form" method="POST">
+                    {{ form.hidden_tag() }}
+                    <div class="form-group custom-form">
+                        {{ form.description(class="form-control", style="margin-right: 15px", cols="40", rows="4") }}
+                        {{ form.submit(class="btn btn-outline-primary") }}
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- HAIR TIP FORM : end -->
+
+        <!-- USERS TABLE : begin -->
+        {# {% include './admin/partials/hair/tips-table.html' %} #}
+        <!-- USERS TABLE : end -->
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+    $('#description').val('{{ tip.description }}')
+</script>
+{% endblock %}

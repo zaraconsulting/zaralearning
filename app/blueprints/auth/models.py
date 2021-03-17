@@ -48,6 +48,7 @@ class Account(UserMixin, db.Model):
         data = {
             'email': self.email,
             'name': self.name,
+            'customer': {'id': self.customer_id, 'is_customer': self.is_customer},
             'password': self.password,
             'date_created': self.date_created
         }

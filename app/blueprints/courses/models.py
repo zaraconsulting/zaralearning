@@ -9,19 +9,27 @@ class Course(db.Model):
     date_created = db.Column(db.DateTime, default=dt.utcnow)
     reviews = db.relationship('CourseReview', backref='review', cascade="all,delete", lazy='dynamic')
     tags = db.relationship('CourseTag', backref='tag', cascade="all,delete", lazy='dynamic')
+    category_id = db.Column(db.Integer, db.ForeignKey('course_category.id'))
+
+    def create_course(self):
+        db.session.add(self)
+        db.session.commit()
 
     def to_dict(self):
         data = {
             'id': self.id,
             'name': self.name,
+            'icon': self.icon,
             'description': self.description,
             'date_created': self.date_created,
-            'reviews': [c.to_dict() for c in CourseReview.query.filter_by(course_id=self.id).all()],
+            'category': CourseCategory.query.get(self.category_id),
+            'tags': ', '.join([t.text for t in CourseTag.query.filter_by(course_id=self.id).all()]),
+            'reviews': [r.to_dict() for r in CourseReview.query.filter_by(course_id=self.id).all()],
         }
         return data
 
     def from_dict(self, data):
-        for field in ['name', 'description', 'date_created']:
+        for field in ['name', 'icon', 'description', 'category_id']:
             if field in data:
                 setattr(self, field, data[field])
 
@@ -44,7 +52,7 @@ class CourseReview(db.Model):
             'date_created': self.date_created,
             'course': {
                 'id': self.course_id,
-                'name': Course.query.filter_by(id=self.course.id).first().name
+                'name': Course.query.get(self.course_id).name
             },
             'comments': [c.to_dict() for c in ReviewComment.query.filter_by(review_id=self.id).all()],
         }
@@ -95,6 +103,7 @@ class CourseCategory(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
     icon = db.Column(db.String)
+    courses = db.relationship('Course', backref='course', cascade="all,delete", lazy='dynamic')
 
     def to_dict(self):
         data = {
@@ -104,6 +113,13 @@ class CourseCategory(db.Model):
         }
         return data
 
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+    
+    def delete(self):
+        db.session.remove(self)
+        db.session.commit()
 
     def from_dict(self, data):
         for field in ['name', 'icon']:
