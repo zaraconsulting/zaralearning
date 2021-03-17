@@ -13,3 +13,4 @@ class Config:
     STRIPE_PUB_KEY = os.getenv('STRIPE_PUB_KEY')
     STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY')
     SUBSCRIPTION_BASIC = os.getenv('SUBSCRIPTION_BASIC')
+    HOME_URL = os.getenv('HOME_URL')

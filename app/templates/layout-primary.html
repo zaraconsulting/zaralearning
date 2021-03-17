@@ -46,14 +46,13 @@
         {% include './partials/scripts.html' %}
         <script src="https://js.stripe.com/v3/"></script>
         <script>
-            console.log('{{ is_authenticated }}')
             var stripe = Stripe('{{ stripe_pub_key }}')
             $('.stripe-subscribe').each((idx, el) => {
                 $(el).on('click', e => {
                     if ('{{ is_authenticated }}' === 'False') {
-                        return window.location.href = 'http://127.0.0.1:5000/auth/login?is_authenticated=false';
+                        return window.location.href = `${'{{ home_url }}'}/auth/login?is_authenticated=false`;
                     }
-                    fetch('http://127.0.0.1:5000/shop/subscribe', {
+                    fetch(`${'{{ home_url }}'}/shop/subscribe`, {
                         method: 'POST',
                         mode: 'cors',
                         headers: {
