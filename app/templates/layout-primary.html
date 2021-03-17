@@ -50,7 +50,7 @@
             $('.stripe-subscribe').each((idx, el) => {
                 $(el).on('click', e => {
                     if ('{{ is_authenticated }}' === 'False') {
-                        return window.location.href = `${'{{ home_url }}'}/auth/login?is_authenticated=false`;
+                        return window.location.href = '/auth/login?is_authenticated=false';
                     }
                     fetch(`${'{{ home_url }}'}/shop/subscribe`, {
                         method: 'POST',

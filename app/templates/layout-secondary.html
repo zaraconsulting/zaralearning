@@ -45,10 +45,15 @@
     <!-- jQuery Frameworks -->
     {% block scripts %}
     {% include './partials/scripts.html' %}
+    <script src="https://js.stripe.com/v3/"></script>
     <script>
+        var stripe = Stripe('{{ stripe_pub_key }}')
         $('.stripe-subscribe').each((idx, el) => {
             $(el).on('click', e => {
-                fetch('http://127.0.0.1:5000/shop/subscribe', {
+                if ('{{ is_authenticated }}' === 'False') {
+                    return window.location.href = '/auth/login?is_authenticated=false';
+                }
+                fetch(`${'{{ home_url }}'}/shop/subscribe`, {
                     method: 'POST',
                     mode: 'cors',
                     headers: {
@@ -58,13 +63,12 @@
                         priceId: '{{ subscription_basic }}'
                     })
                 })
-                .then(res => res.json())
-                .then(data => {
-                    console.log(data)
-                    stripe.redirectToCheckout({
-                        sessionId: data.sessionId
-                    }).then(() => console.log('Done'))
-                })
+                    .then(res => res.json())
+                    .then(data => {
+                        stripe.redirectToCheckout({
+                            sessionId: data.sessionId
+                        }).then(() => console.log('Done'))
+                    })
             })
         })
     </script>
