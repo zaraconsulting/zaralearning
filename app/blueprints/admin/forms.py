@@ -32,10 +32,17 @@ class AdminCreateCourseForm(FlaskForm):
     category = SelectField(choices=[], coerce=int)
     submit = SubmitField('Create Course')
     
+class AdminEditCourseCategoryForm(FlaskForm):
+    name = StringField('Name', validators=[DataRequired()])
+    icon = StringField('Icon', validators=[DataRequired()])
+    submit = SubmitField('Edit Course')
+    
 class AdminEditCourseForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
     description = TextAreaField('Description', validators=[DataRequired()])
     icon = StringField('Icon', validators=[DataRequired()])
+    video = StringField('Video', validators=[DataRequired()])
+    video_thumbnail = StringField('Thumbnail', validators=[DataRequired()])
     category = SelectField(choices=[], coerce=int)
     tags = TextAreaField('Tags')
     submit = SubmitField('Edit Course')

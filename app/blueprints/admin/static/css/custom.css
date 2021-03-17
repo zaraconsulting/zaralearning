@@ -5,3 +5,7 @@
 .form-control, input.btn, .check-padding {
     margin-bottom: 15px;
 }
+
+.video-play-button:after {
+    background:  unset;
+}

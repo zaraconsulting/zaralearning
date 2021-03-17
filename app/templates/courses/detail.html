@@ -40,7 +40,7 @@
                         <li>
                             <div class="info">
                                 <span>Category</span>
-                                <h5>Mathematics</h5>
+                                <h5>{{ c.category.name }}</h5>
                             </div>
                         </li>
                         <li>
@@ -74,13 +74,13 @@
                                 <p>
                                     {{ c.description }}
                                 </p>
-                                <h4>Learning Objectives</h4>
+                                <!-- <h4>Learning Objectives</h4>
                                 <ul>
                                     <li>Be able to use simple tricks and techniques to make self-control easier.</li>
                                     <li>Actually apply these strategies and make a deliberate effort to understand their effects</li>
                                     <li>Have a huge advantage when it comes to sticking to your diet</li>
                                     <li>Meeting your fitness goals, and leading a healthier lifestyle.</li>
-                                </ul>
+                                </ul> -->
                             </div>
                             <div id="tab2" class="tab-pane curriculum fade">
                                 <p>
@@ -364,8 +364,8 @@
                 <!-- Single Item -->
                 <div class="item course-preview">
                     <div class="thumb">
-                        <img src="{{ url_for('static', filename='assets/img/800x600.png') }}" alt="Thumb">
-                        <a href="https://www.youtube.com/watch?v=owhuBrGIOsE" class="popup-youtube light video-play-button item-center">
+                        <img src="{{ c.video_thumbnail }}" alt="Thumb">
+                        <a href="https://zclearning.s3.amazonaws.com/courses/lectures/Hosting+to+Heroku.mp4" class="popup-youtube light video-play-button item-center">
                             <i class="fa fa-play"></i>
                         </a>
                     </div>
@@ -408,14 +408,18 @@
                 <!-- Single Item -->
 
                 <!-- Single Item -->
+                {% if c._tags %}
                 <div class="item course-category">
                     <div class="content">
-                        <h4>Course categories</h4>
+                        <h4>Search by Tags</h4>
                         <ul>
+                            {% for t in c._tags %}
                             <li>
-                                <a href="#">Java Programming <span>23</span></a>
+                                <a href="#">{{ t.text }}</a>
+                                <!-- <a href="#">{{ t.text }} <span>23</span></a> -->
                             </li>
-                            <li>
+                            {% endfor %}
+                            <!-- <li>
                                 <a href="#">Social Science <span>0</span></a>
                             </li>
                             <li>
@@ -426,10 +430,11 @@
                             </li>
                             <li>
                                 <a href="#">Course Management <span>0</span></a>
-                            </li>
+                            </li> -->
                         </ul>
                     </div>
                 </div>
+                {% endif %}
                 <!-- End Single Item -->
 
                 <!-- Single Item -->

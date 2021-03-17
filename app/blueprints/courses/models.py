@@ -4,6 +4,8 @@ from datetime import datetime as dt
 class Course(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
+    video = db.Column(db.String)
+    video_thumbnail = db.Column(db.String)
     icon = db.Column(db.String)
     description = db.Column(db.Text)
     date_created = db.Column(db.DateTime, default=dt.utcnow)
@@ -20,16 +22,19 @@ class Course(db.Model):
             'id': self.id,
             'name': self.name,
             'icon': self.icon,
+            'video': self.video,
+            'video_thumbnail': self.video_thumbnail,
             'description': self.description,
             'date_created': self.date_created,
             'category': CourseCategory.query.get(self.category_id),
+            '_tags': CourseTag.query.filter_by(course_id=self.id).all(),
             'tags': ', '.join([t.text for t in CourseTag.query.filter_by(course_id=self.id).all()]),
             'reviews': [r.to_dict() for r in CourseReview.query.filter_by(course_id=self.id).all()],
         }
         return data
 
     def from_dict(self, data):
-        for field in ['name', 'icon', 'description', 'category_id']:
+        for field in ['name', 'icon', 'video', 'video_thumbnail', 'description', 'category_id']:
             if field in data:
                 setattr(self, field, data[field])
 
@@ -68,7 +73,7 @@ class CourseReview(db.Model):
 
 class CourseTag(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    text = db.Column(db.String, unique=True)
+    text = db.Column(db.String)
     course_id = db.Column(db.Integer, db.ForeignKey('course.id', ondelete='CASCADE'))
 
     def __repr__(self):

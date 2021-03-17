@@ -2,7 +2,7 @@ from .import bp as admin
 from flask import render_template, redirect, url_for, request, flash, session, current_app
 from app.blueprints.courses.models import Course, CourseCategory, CourseTag
 from app.blueprints.auth.models import Account
-from .forms import AdminUserForm, AdminLoginForm, AdminEditUserForm, AdminEditUserForm, AdminCreateCourseForm, AdminResetPasswordRequestForm, AdminResetPasswordForm, AdminCreatePatternForm, AdminEditPatternForm, AdminEditCourseForm, AdminCreateHairTipForm, AdminEditHairTipForm
+from .forms import AdminEditCourseCategoryForm, AdminLoginForm, AdminEditUserForm, AdminCreateCourseForm, AdminResetPasswordRequestForm, AdminResetPasswordForm, AdminEditCourseForm
 from flask_login import current_user, login_user, logout_user
 from app import db
 import requests, stripe
@@ -76,9 +76,12 @@ def edit_course():
     if request.method == 'POST':
         form = AdminEditCourseForm()
         
-        data = dict(name=form.name.data, icon=form.icon.data, description=form.description.data, category_id=form.category.data)
+        data = dict(name=form.name.data, icon=form.icon.data, video=form.video.data, description=form.description.data, video_thumbnail=form.video_thumbnail.data, category_id=form.category.data)
         c.from_dict(data)
         
+        [db.session.delete(i) for i in CourseTag.query.filter_by(course_id=c.id).all()]
+        db.session.commit()
+
         tags = form.tags.data.lower().split(', ')
         # print(tags)
         new_tags = []
@@ -477,7 +480,28 @@ def create_course_category():
     return redirect(url_for('admin.course_categories'))
 
 
-@admin.route('/course_categories/delete')
+@admin.route('/course/category/edit', methods=['GET', 'POST'])
+def edit_course_category():
+    pass
+    if not current_user.is_authenticated:
+        return redirect(url_for('admin.login'))
+    c = CourseCategory.query.get(request.args.get('id'))
+    form = AdminEditCourseCategoryForm()
+    if request.method == 'POST':
+        form = AdminEditCourseCategoryForm()
+        data = dict(name=form.name.data, icon=form.icon.data)
+        c.from_dict(data)
+        db.session.commit()
+        flash('Edited course category successfully', 'info')
+        return redirect(url_for('admin.edit_course_category', id=c.id))
+    context = {
+        'c': c,
+        'form': form
+    }
+    return render_template('admin/course-category-edit.html', **context)
+
+
+@admin.route('/course/category/delete')
 def delete_course_category():
     if not current_user.is_authenticated:
         return redirect(url_for('admin.login'))

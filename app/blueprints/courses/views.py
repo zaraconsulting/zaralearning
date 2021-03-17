@@ -11,4 +11,4 @@ def detail():
     params = request.args
     c = Course.query.get(params.get('id'))
     # print(c.to_dict())
-    return render_template('courses/detail.html', c=c)
+    return render_template('courses/detail.html', c=c.to_dict())

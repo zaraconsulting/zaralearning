@@ -10,9 +10,9 @@
         <div class="heading-left">
             <div class="row">
                 <div class="col-lg-5">
-                    <h5>Popular Courses</h5>
+                    <h5>Popular Topics</h5>
                     <h2>
-                        Our Most Popular & Trending Online Courses
+                        Learn career-oriented information
                     </h2>
                 </div>
                 <div class="col-lg-6 offset-lg-1">
@@ -20,7 +20,7 @@
                         Everything melancholy uncommonly but solicitude inhabiting projection off. Connection stimulated
                         estimating excellence an to impression.
                     </p>
-                    <a class="btn btn-md btn-dark border" href="#">View All <i class="fas fa-plus"></i></a>
+                    <a class="btn btn-md btn-dark border" href="{{ url_for('courses.index') }}">View All <i class="fas fa-plus"></i></a>
                 </div>
             </div>
         </div>
@@ -33,12 +33,10 @@
                 <div class="single-item col-lg-4 col-md-6">
                     <div class="item">
                         <div class="thumb">
-                            <a href="#">
-                                <img src="{{ url_for('static', filename='assets/img/800x600.png') }}" alt="Thumb">
-                            </a>
+                            <img src="{{ c.video_thumbnail }}" alt="Thumb">
                         </div>
                         <div class="info">
-                            <div class="top-info">
+                            <!-- <div class="top-info">
                                 <div class="rating">
                                     <i class="fas fa-star"></i>
                                     <i class="fas fa-star"></i>
@@ -47,10 +45,10 @@
                                     <i class="fas fa-star-half-alt"></i>
                                     <span>4.8 (867)</span>
                                 </div>
-                                <!-- <div class="price">
+                                <div class="price">
                                     $15.00
-                                </div> -->
-                            </div>
+                                </div>
+                            </div> -->
                             <!-- <div class="meta">
                                 <ul>
                                     <li>
@@ -59,9 +57,7 @@
                                     </li>
                                 </ul>
                             </div> -->
-                            <h4>
-                                <a href="#">{{ c.name }}</a>
-                            </h4>
+                            <h4><strong>{{ c.name }}</strong></h4>
                             <p>
                                 {{ c.description|truncate(95) }}
                             </p>
