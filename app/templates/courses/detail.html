@@ -365,9 +365,11 @@
                 <div class="item course-preview">
                     <div class="thumb">
                         <img src="{{ c.video_thumbnail }}" alt="Thumb">
-                        <a href="https://zclearning.s3.amazonaws.com/courses/lectures/Hosting+to+Heroku.mp4" class="popup-youtube light video-play-button item-center">
+                        {% if current_user.is_authenticated and current_user.is_customer %}
+                        <a href="{{ c.video }}" class="popup-youtube light video-play-button item-center">
                             <i class="fa fa-play"></i>
                         </a>
+                        {% endif %}
                     </div>
                     <div class="content">
                         <!-- <div class="top">
@@ -402,7 +404,11 @@
                                 </li>
                             </ul>
                         </div>
-                        <a class="btn btn-theme effect btn-sm" href="#">Enroll Now</a>
+                        {% if current_user.is_authenticated and current_user.is_customer %}
+                        <a class="btn btn-theme effect btn-sm" href="{{ c.video }}">Watch</a>
+                        {% else %}
+                        <button style="margin-top:15px;" id='stripe-subscribe' class="btn btn-theme effect btn btn-lg btn-block">Subscribe</button>
+                        {% endif %}
                     </div>
                 </div>
                 <!-- Single Item -->
@@ -528,3 +534,34 @@
 </div>
 <!-- End Course Details -->
 {% endblock body %}
+
+{% block scripts %}
+{{ super() }}
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+    var stripe = Stripe('{{ stripe_pub_key }}')
+    $('#stripe-subscribe').each((idx, el) => {
+        $(el).on('click', e => {
+            if ('{{ is_authenticated }}' === 'False') {
+                return window.location.href = '/auth/login?is_authenticated=false';
+            }
+            fetch('/shop/subscribe', {
+                method: 'POST',
+                mode: 'cors',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    priceId: '{{ subscription_basic }}'
+                })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    stripe.redirectToCheckout({
+                        sessionId: data.sessionId
+                    }).then(() => console.log('Done'))
+                })
+        })
+    })
+</script>
+{% endblock scripts %}

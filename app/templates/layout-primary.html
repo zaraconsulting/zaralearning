@@ -44,33 +44,6 @@
     <!-- jQuery Frameworks -->
     {% block scripts %}
         {% include './partials/scripts.html' %}
-        <script src="https://js.stripe.com/v3/"></script>
-        <script>
-            var stripe = Stripe('{{ stripe_pub_key }}')
-            $('.stripe-subscribe').each((idx, el) => {
-                $(el).on('click', e => {
-                    if ('{{ is_authenticated }}' === 'False') {
-                        return window.location.href = '/auth/login?is_authenticated=false';
-                    }
-                    fetch(`${'{{ home_url }}'}/shop/subscribe`, {
-                        method: 'POST',
-                        mode: 'cors',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            priceId: '{{ subscription_basic }}'
-                        })
-                    })
-                    .then(res => res.json())
-                    .then(data => {
-                        stripe.redirectToCheckout({
-                            sessionId: data.sessionId
-                        }).then(() => console.log('Done'))
-                    })
-                })
-            })
-        </script>
     {% endblock scripts %}
 
     </body>
