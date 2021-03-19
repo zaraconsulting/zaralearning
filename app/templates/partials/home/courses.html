@@ -33,7 +33,7 @@
                 <div class="single-item col-lg-4 col-md-6">
                     <div class="item">
                         <div class="thumb">
-                            <img src="{{ c.video_thumbnail }}" alt="Thumb">
+                            <img src="{{ aws_bucket_image_location }}/{{ c.video_thumbnail }}" alt="Thumb">
                         </div>
                         <div class="info">
                             <!-- <div class="top-info">
@@ -70,7 +70,7 @@
                                     </ul>
                                 </div>
                                 <div class="enroll">
-                                    <a href="{{ url_for('courses.detail', id=c.id) }}" class="btn btn-theme effect btn-sm video-watch">Watch</a>
+                                    <a href="{{ url_for('courses.detail', name=c.slug) }}" class="btn btn-theme effect btn-sm video-watch">Watch</a>
                                     {# {% if current_user.is_authenticated %}
                                         <a class="btn btn-theme effect btn-sm video-watch" href="{{ url_for('courses.detail', id=c.id) }}">Watch</a>
                                         <button class="btn btn-theme effect btn-sm stripe-subscribe">Subscribe</button>
@@ -81,48 +81,6 @@
                         </div>
                     </div>
                 </div>
-                <!-- <div class="single-item col-lg-4 col-md-6">
-                    <div class="item">
-                        <div class="thumb">
-                            <img src="{{ url_for('static', filename='assets/img/800x600.png') }}" alt="Thumb">
-                            <div class="price">
-                                <h5>Subscribe</h5>
-                            </div>
-                        </div>
-                        <div class="info">
-                            <div class="top-info">
-                                <div class="top-meta">
-                                    <ul>
-                                        <li><i class="fas fa-clock"></i> 45 Hours</li>
-                                        <li><i class="fas fa-list-ul"></i> 345</li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <h4>
-                                <a href="#">{{ c.name }}</a>
-                            </h4>
-                            <div class="meta">
-                                <div class="author">
-                                    <img src="{{ url_for('static', filename='assets/img/100x100.png') }}" alt="Advisor">
-                                    <span><strong>Busel park</strong> in <a href="#">Web</a></span>
-                                </div>
-                            </div>
-                            <div class="bottom-info">
-                                <div class="course-info">
-                                    <i class="fas fa-user"></i> 6K
-                                </div>
-                                <div class="rating">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star-half-alt"></i>
-                                    <span>4.8 (867)</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div> -->
                 {% endfor %}
                 <!-- End Single item -->
             </div>

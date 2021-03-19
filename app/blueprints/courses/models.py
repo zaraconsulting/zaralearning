@@ -8,13 +8,22 @@ class Course(db.Model):
     video_thumbnail = db.Column(db.String)
     icon = db.Column(db.String)
     description = db.Column(db.Text)
+    slug = db.Column(db.String)
     date_created = db.Column(db.DateTime, default=dt.utcnow)
     reviews = db.relationship('CourseReview', backref='review', cascade="all,delete", lazy='dynamic')
     tags = db.relationship('CourseTag', backref='tag', cascade="all,delete", lazy='dynamic')
     category_id = db.Column(db.Integer, db.ForeignKey('course_category.id'))
 
-    def create_course(self):
+    def slugify(self):
+        self.slug = self.name.lower().replace(' ', '-')
+
+    def save(self):
+        self.slugify()
         db.session.add(self)
+        db.session.commit()
+
+    def delete(self):
+        db.session.delete(self)
         db.session.commit()
 
     def to_dict(self):

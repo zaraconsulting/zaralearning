@@ -364,9 +364,9 @@
                 <!-- Single Item -->
                 <div class="item course-preview">
                     <div class="thumb">
-                        <img src="{{ c.video_thumbnail }}" alt="Thumb">
+                        <img src="{{ aws_bucket_image_location }}/{{ c.video_thumbnail }}" alt="Thumb">
                         {% if current_user.is_authenticated and current_user.is_customer %}
-                        <a href="{{ c.video }}" class="popup-youtube light video-play-button item-center">
+                        <a href="{{ aws_bucket_video_location }}/{{ c.video }}" class="popup-youtube light video-play-button item-center">
                             <i class="fa fa-play"></i>
                         </a>
                         {% endif %}
@@ -405,7 +405,9 @@
                             </ul>
                         </div>
                         {% if current_user.is_authenticated and current_user.is_customer %}
-                        <a class="btn btn-theme effect btn-sm" href="{{ c.video }}">Watch</a>
+                        <a class="btn btn-theme effect btn-sm popup-youtube" href="{{ c.video }}">Watch</a>
+                        {% elif not current_user.is_authenticated %}
+                        <a class="btn btn-theme effect btn-sm" href="{{ url_for('auth.login') }}">Log In</a>
                         {% else %}
                         <button style="margin-top:15px;" id='stripe-subscribe' class="btn btn-theme effect btn btn-lg btn-block">Subscribe</button>
                         {% endif %}
@@ -420,10 +422,8 @@
                         <h4>Search by Tags</h4>
                         <ul>
                             {% for t in c._tags %}
-                            <li>
-                                <a href="#">{{ t.text }}</a>
+                                <a href="#" style="margin-right:10px;">{{ t.text }}</a>
                                 <!-- <a href="#">{{ t.text }} <span>23</span></a> -->
-                            </li>
                             {% endfor %}
                             <!-- <li>
                                 <a href="#">Social Science <span>0</span></a>

@@ -1,12 +1,14 @@
 from .import bp as admin
-from flask import render_template, redirect, url_for, request, flash, session, current_app
+from flask import render_template, redirect, url_for, request, flash, session, current_app as app, jsonify
 from app.blueprints.courses.models import Course, CourseCategory, CourseTag
 from app.blueprints.auth.models import Account
 from .forms import AdminEditCourseCategoryForm, AdminLoginForm, AdminEditUserForm, AdminCreateCourseForm, AdminResetPasswordRequestForm, AdminResetPasswordForm, AdminEditCourseForm
 from flask_login import current_user, login_user, logout_user
 from app import db
-import requests, stripe
+import requests, stripe, time, boto3, os
+from requests_toolbelt.multipart.encoder import MultipartEncoder
 from datetime import datetime as dt
+from werkzeug.utils import secure_filename
 
 @admin.route('/', methods=['GET'])
 def index():
@@ -65,6 +67,7 @@ def edit_course():
     if not current_user.is_authenticated:
         return redirect(url_for('admin.login'))
     c = Course.query.get(request.args.get('id'))
+    
     if request.method == 'GET':
         form = AdminEditCourseForm()
         
@@ -76,7 +79,7 @@ def edit_course():
     if request.method == 'POST':
         form = AdminEditCourseForm()
         
-        data = dict(name=form.name.data, icon=form.icon.data, video=form.video.data, description=form.description.data, video_thumbnail=form.video_thumbnail.data, category_id=form.category.data)
+        data = dict(name=form.name.data, icon=form.icon.data, video=form.video.data, description=form.description.data, video_thumbnail=f'{form.video_thumbnail.data}', category_id=form.category.data)
         c.from_dict(data)
         
         [db.session.delete(i) for i in CourseTag.query.filter_by(course_id=c.id).all()]
@@ -99,26 +102,42 @@ def edit_course():
     }
     return render_template('admin/courses-edit.html', **context)
 
-@admin.route('/courses', methods=['POST'])
+@admin.route('/course/create', methods=['POST'])
 def create_course():
-    pass
-    # if not current_user.is_authenticated:
-    #     return redirect(url_for('admin.login'))
-    # if request.method == 'POST':
-    #     course = Course()
-    #     data = dict(text=request.form.get('course_code'), discount=request.form.get('discount'))
-    #     course.from_dict(data)
-    #     db.session.commit()
-    #     flash('Course created successfully', 'success')
-    # return redirect(url_for('admin.courses'))
+    if not current_user.is_authenticated:
+        return redirect(url_for('admin.login'))
+        
+    form = AdminCreateCourseForm()
+    filename_img = str(int(time.time() * 10)) + '.png'
+    filename_vid = str(int(time.time() * 10)) + '.mp4'
 
-@admin.route('/courses/delete')
+    if not os.path.isdir('temp'):
+        os.mkdir('temp')
+    form.image.data.save(f"temp/{filename_img}")
+    form.video.data.save(f"temp/{filename_vid}")
+
+    s3_client = boto3.client('s3', aws_access_key_id=app.config.get('AWS_ACCESS_KEY_ID'), aws_secret_access_key=app.config.get('AWS_SECRET_ACCESS_KEY'))
+    # upload image
+    s3_client.upload_fileobj(open(f'temp/{filename_img}', 'rb'), app.config.get('AWS_S3_BUCKET'), 'courses/thumbnails/' + filename_img, ExtraArgs={ 'ACL': 'public-read' })
+    # upload video
+    s3_client.upload_fileobj(open(f'temp/{filename_vid}', 'rb'), app.config.get('AWS_S3_BUCKET'), 'courses/videos/' + filename_vid, ExtraArgs={ 'ACL': 'public-read' })
+
+    course = Course()
+    data = dict(name=form.name.data, icon=form.icon.data, video=filename_vid, video_thumbnail=filename_img, description=form.description.data, category_id=form.category.data)
+    course.from_dict(data)
+    course.save()
+    os.remove(f'temp/{filename_img}')
+    os.remove(f'temp/{filename_vid}')
+    flash('Course created successfully', 'success')
+    return redirect(url_for('admin.courses'))
+
+@admin.route('/course/delete')
 def delete_course():
     if not current_user.is_authenticated:
         return redirect(url_for('admin.login'))
     _id = int(request.args.get('id'))
     course = Course.query.get(_id)
-    course.delete_course()
+    course.delete()
     flash('Course deleted successfully', 'info')
     return redirect(url_for('admin.courses'))
 
@@ -198,25 +217,6 @@ def delete_account():
     flash('User deleted successfully', 'info')
     return redirect(url_for('admin.users'))
 
-# @admin.route('/users', methods=['POST'])
-# def create_user():
-#     if request.method == 'POST':
-#         user = Account()
-#         data = {
-#             'email': request.form.get('email'), 
-#             'password': request.form.get('email')
-#         }
-#         user.from_dict(data)
-#         user.role_id = Role.query.filter_by(name=request.form.get('role').title()).first().id
-#         print(Role.query.all())
-#         print(Role.query.filter_by(name=request.form.get('role')).first().id)
-#         if request.form.get('is_admin') is not None:
-#             user.is_admin = request.form.get('is_admin')
-#         user.set_password_hash(user.password)
-#             # 'role_id': Role.query.filter_by(name=request.form.get('role').title()).first().id,
-#         user.create_user()
-#         flash('User created successfully', 'success')
-#     return redirect(url_for('admin.users'))
 
 @admin.route('/roles', methods=['GET'])
 def roles():
@@ -252,69 +252,6 @@ def delete_role():
     return redirect(url_for('admin.roles'))
 
 
-@admin.route('/hair/products', methods=['GET', 'POST'])
-def hair_products():
-    if not current_user.is_authenticated:
-        return redirect(url_for('admin.login'))
-    form = AdminCreateCourseForm()
-    form.pattern.choices = [(i.id, i.name) for i in Pattern.query.course_categorie_by(Pattern.name).all()]
-    form.category.choices = [(i.id, i.name) for i in HairCategory.query.course_categorie_by(HairCategory.name).all()]
-
-    if form.validate_on_submit():
-        product = Hair()
-        data = {
-            'pattern': Pattern.query.get(form.pattern.data).name, 
-            'length': form.length.data,
-            'price': form.price.data, 
-            'category_id': HairCategory.query.get(int(form.category.data)).name,
-        }
-        product.from_dict(data)
-        product.pattern_id = Pattern.query.get(form.pattern.data).id
-        product.category_id = HairCategory.query.get(form.category.data).id
-        # product.bundle_length = form.bundle_length.data or ''
-        product.create_hair_product()
-        flash('Hair Product created successfully', 'success')
-        return redirect(url_for('admin.hair_products'))
-    return render_template('admin/hair/products.html', products=Hair.query.course_categorie_by(Hair.pattern).all(), form=form)
-
-@admin.route('/hair/product/edit', methods=['GET', 'POST'])
-def edit_hair_product():
-    if not current_user.is_authenticated:
-        return redirect(url_for('admin.login'))
-    p = Hair.query.get(request.args.get('id'))
-    form = AdminEditCourseForm()
-    form.pattern.choices = [(i.id, i.name) for i in Pattern.query.course_categorie_by(Pattern.name).all()]
-    form.category.choices = [(i.id, i.name) for i in HairCategory.query.course_categorie_by(HairCategory.name).all()]
-
-    if form.validate_on_submit():
-        data = {
-            'pattern': Pattern.query.get(form.pattern.data).name, 
-            'length': form.length.data,
-            'price': form.price.data, 
-            'category_id': HairCategory.query.get(int(form.category.data)).name,
-        }
-        p.from_dict(data)
-        p.pattern_id = Pattern.query.get(form.pattern.data).id
-        p.category_id = HairCategory.query.get(form.category.data).id
-        db.session.commit()
-        flash('Edited product successfully', 'info')
-        return redirect(url_for('admin.hair_products'))
-    context = {
-        'product': p,
-        'form': form
-    }
-    return render_template('admin/hair/products-edit.html', **context)
-
-@admin.route('/hair/product/delete')
-def delete_hair_product():
-    if not current_user.is_authenticated:
-        return redirect(url_for('admin.login'))
-    _id = int(request.args.get('id'))
-    product = Hair.query.get(_id)
-    product.delete_hair_product()
-    flash('User deleted successfully', 'info')
-    return redirect(url_for('admin.hair_products'))
-
 @admin.route('/reset_password_request', methods=['GET', 'POST'])
 def reset_password_request():
     if current_user.is_authenticated:
@@ -349,114 +286,6 @@ def reset_password(token):
         flash('Your password has been reset', 'success')
         return redirect(url_for('admin.login'))
     return render_template('admin/reset_password.html', user=user, form=form)
-
-
-####################################
-# PATTERNS
-####################################
-@admin.route('hair/patterns', methods=['GET', 'POST'])
-def hair_patterns():
-    if not current_user.is_authenticated:
-        return redirect(url_for('admin.login'))
-    form = AdminCreatePatternForm()
-    if form.validate_on_submit():
-        file = request.files.get('image')
-        result = upload(file)
-        pattern = Pattern()
-        data = {
-            'name': form.name.data.title(), 
-            'image': result['url'],
-        }
-        pattern.from_dict(data)
-        pattern.create_hair_pattern()
-        flash('Pattern created successfully', 'success')
-        return redirect(url_for('admin.hair_patterns'))
-    return render_template('admin/hair/patterns.html', patterns=Pattern.query.all(), form=form)
-
-@admin.route('/hair/pattern/edit', methods=['GET', 'POST'])
-def edit_hair_pattern():
-    if not current_user.is_authenticated:
-        return redirect(url_for('admin.login'))
-    p = Pattern.query.get(request.args.get('id'))
-    form = AdminEditPatternForm()
-    form.name.choices = [(i.id, i.name) for i in Pattern.query.course_categorie_by(Pattern.name).all()]
-    if form.validate_on_submit():
-        p = Pattern.query.get(form.name.data)
-        file = request.files.get('image')
-        result = upload(file)
-        data = {
-            'name': Pattern.query.get(form.name.data).name,
-            'image': result['url'], 
-        }
-        p.from_dict(data)
-        db.session.commit()
-        flash('Edited pattern successfully', 'info')
-        return redirect(url_for('admin.hair_patterns'))
-    context = {
-        'pattern': p,
-        'form': form
-    }
-    return render_template('admin/hair/patterns-edit.html', **context)
-
-@admin.route('/hair/pattern/delete')
-def delete_hair_pattern():
-    if not current_user.is_authenticated:
-        return redirect(url_for('admin.login'))
-    _id = int(request.args.get('id'))
-    pattern = Pattern.query.get(_id)
-    pattern.delete_hair_pattern()
-    flash('Pattern deleted successfully', 'info')
-    return redirect(url_for('admin.hair_patterns'))
-
-
-####################################
-# HAIR TIPS
-####################################
-@admin.route('hair/tips', methods=['GET', 'POST'])
-def hair_tips():
-    if not current_user.is_authenticated:
-        return redirect(url_for('admin.login'))
-    form = AdminCreateHairTipForm()
-    if form.validate_on_submit():
-        ht = HairTip()
-        data = {
-            'description': form.description.data, 
-        }
-        ht.from_dict(data)
-        ht.create_tip()
-        flash('Hair Tip created successfully', 'success')
-        return redirect(url_for('admin.hair_tips'))
-    return render_template('admin/hair/tips.html', tips=HairTip.query.all(), form=form)
-
-@admin.route('/hair/tip/edit', methods=['GET', 'POST'])
-def edit_hair_tip():
-    if not current_user.is_authenticated:
-        return redirect(url_for('admin.login'))
-    ht = HairTip.query.get(request.args.get('id'))
-    form = AdminEditHairTipForm()
-    if form.validate_on_submit():
-        data = {
-            'description': form.description.data,
-        }
-        ht.from_dict(data)
-        db.session.commit()
-        flash('Hair tip updated successfully', 'info')
-        return redirect(url_for('admin.hair_tips'))
-    context = {
-        'tip': ht,
-        'form': form
-    }
-    return render_template('admin/hair/tips-edit.html', **context)
-
-@admin.route('/hair/tip/delete')
-def delete_hair_tip():
-    if not current_user.is_authenticated:
-        return redirect(url_for('admin.login'))
-    _id = int(request.args.get('id'))
-    ht = HairTip.query.get(_id)
-    ht.delete_hair_tip()
-    flash('Hair tip deleted successfully', 'info')
-    return redirect(url_for('admin.hair_tips'))
 
 
 @admin.route('/course_categories', methods=['GET'])

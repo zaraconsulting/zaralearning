@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SelectField, BooleanField, SubmitField, PasswordField, IntegerField, FloatField, TextAreaField
+from wtforms import StringField, SelectField, BooleanField, SubmitField, PasswordField, IntegerField, FloatField, TextAreaField, FileField
 from wtforms.validators import Email, DataRequired, EqualTo
 import email_validator
 
@@ -28,6 +28,8 @@ class AdminLoginForm(FlaskForm):
 class AdminCreateCourseForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
     description = TextAreaField('Description', validators=[DataRequired()])
+    image = FileField('Upload Image', validators=[DataRequired()])
+    video = FileField('Upload Video', validators=[DataRequired()])
     icon = StringField('Icon', validators=[DataRequired()])
     category = SelectField(choices=[], coerce=int)
     submit = SubmitField('Create Course')

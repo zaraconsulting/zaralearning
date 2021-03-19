@@ -7,7 +7,7 @@
                 <div class="single-item col-lg-4 col-md-6">
                     <div class="item">
                         <div class="thumb">
-                            <img src="{{ url_for('static', filename='assets/img/800x600.png') }}" alt="Thumb">
+                            <img src="{{ aws_bucket_image_location }}/{{ c.video_thumbnail }}" alt="Thumb">
                             <div class="course-info">
                                 <ul>
                                     <li><i class="fas fa-clock"></i> 45 Hours</li>
@@ -40,13 +40,15 @@
                                 </div> #}
                             </div>
                             <h4>
-                                <a href="{{ url_for('courses.detail') }}">{{ c.name }}</a>
+                                <a href="{{ url_for('courses.detail', name=c.slug) }}">{{ c.name }}</a>
                             </h4>
                             <div class="bottom">
                                 <ul>
                                     <li><i class="fas fa-user"></i> 8K</li>
                                 </ul>
-                                <a href="#"><!--<i class="fas fa-shopping-cart"></i>-->Subscribe</a>
+                                <a class="btn btn-theme effect btn-sm" href="{{ url_for('courses.detail', name=c.slug) }}">
+                                    Watch
+                                </a>
                             </div>
                         </div>
                     </div>

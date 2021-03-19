@@ -17,18 +17,30 @@
         <div class="card-body">
             <div class="table-responsive">
                 <h5>Create a Course</h5>
-                <form class="form-inline" action="{{ url_for('admin.create_course') }}" method="POST">
+                <form class="form-inline" action="{{ url_for('admin.create_course') }}" method="POST" enctype='multipart/form-data'>
                     {{ form.hidden_tag() }}
                     <div class="form-group custom-form">
-                        {# <input type="text" name="name" id="name" class="form-control" placeholder="Course Name"> #}
-                        {{ form.name(class='form-control', placeholder='Course Name') }}
-                        {# <input type="text" name="icon" id="icon" class="form-control" placeholder="Icon"> #}
-                        {{ form.name(class='form-control', placeholder='FlatIcon') }}
-                        {{ form.category(class="form-control", style="margin-right: 15px") }}
-                        {{ form.description(class="form-control", style="margin-right: 15px", placeholder="Type description here", cols="50") }}
-                        {{ form.submit(class="btn btn-outline-primary") }}
-                        <!-- <textarea placeholder="Type description here" class="form-control" name="description" id="description" cols="30" rows="10" style='margin-right: 15px;'></textarea> -->
-                        {# <input type="submit" class="btn btn-outline-primary" value="Create Course" /> #}
+                        <div class="form-group">
+                            {{ form.name(class='form-control', placeholder='Course Name') }}
+                        </div>
+                        <div class="form-group">
+                            {{ form.icon(class='form-control', placeholder='FlatIcon') }}
+                        </div>
+                        <div class="form-group">
+                            {{ form.category(class="form-control", style="margin-right: 15px") }}
+                        </div>
+                        <div class="form-group">
+                            {{ form.image(class='form-control-file', style='margin-bottom:15px;') }}
+                        </div>
+                        <div class="form-group">
+                            {{ form.video(class='form-control-file', style='margin-bottom:15px;') }}
+                        </div>
+                        <div class="form-group">
+                            {{ form.description(class="form-control", style="margin-right: 15px", placeholder="Type description here", cols="50") }}
+                        </div>
+                        <div class="form-group">
+                            {{ form.submit(class="btn btn-outline-primary") }}
+                        </div>
                     </div>
                 </form>
             </div>

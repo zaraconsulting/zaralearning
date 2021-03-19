@@ -4,7 +4,16 @@
 <div class="container-fluid">
     <h1 class="mt-4">Dashboard</h1>
     <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item active">Courses</li>
+        <li class="breadcrumb-item">
+            <a href="{{ url_for('admin.index') }}">
+                Dashboard 
+            </a>
+        </li>
+        <li class="breadcrumb-item active">
+            <a href="{{ url_for('admin.courses') }}">
+                Courses 
+            </a>
+        </li>
     </ol>
 
     
@@ -22,16 +31,26 @@
                     {{ form.hidden_tag() }}
                     <div class="form-group custom-form">
                         {{ form.name(class='form-control', placeholder="Course Name", value=course.name) }}
-                        {{ form.icon(class='form-control',  placeholder="FlatIcon", value=course.icon) }}
-                        {{ form.video(class='form-control', placeholder="Video Link", value=course.video) }}
-                        {{ form.video_thumbnail(class='form-control', placeholder='Video Thumbnail', value=course.video_thumbnail) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.icon(class='form-control', style="margin-right: 15px",  placeholder="FlatIcon", value=course.icon) }}
+                    </div>
+                    <div class="form-group">
                         {{ form.category(class="form-control", style="margin-right: 15px", value=course.category_id) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.video(class="form-control", style="margin-right: 15px", placeholder='Video Thumbnail', value=course.video) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.video_thumbnail(class="form-control", style="margin-right: 15px", placeholder='Video Link', value=course.video_thumbnail) }}
+                    </div>
+                    <div class="form-group">
                         {{ form.description(class="form-control", style="margin-right: 15px", placeholder="Type description here", cols="50") }}
-                        {{ form.submit(class="btn btn-outline-primary") }}
                     </div>
                     <div class="form-group custom-form">
                         {{ form.tags(class="form-control", value=tags, style="margin-right: 15px", placeholder="Type comma-separated keywords", cols="50") }}
                     </div>
+                    {{ form.submit(class="btn btn-outline-primary") }}
                 </form>
             </div>
         </div>
