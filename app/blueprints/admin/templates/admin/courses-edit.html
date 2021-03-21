@@ -27,31 +27,50 @@
             <div class="table-responsive">
                 <h5>Edit a Course</h5>
 
-                <form class="form-inline" action="{{ url_for('admin.edit_course', id=course.id) }}" method="POST">
-                    {{ form.hidden_tag() }}
-                    <div class="form-group custom-form">
-                        {{ form.name(class='form-control', placeholder="Course Name", value=course.name) }}
+                <div class="row">
+                    <div class="col-md-6">
+                        <form action="{{ url_for('admin.edit_course', id=course.id) }}" method="POST">
+                            {{ form.hidden_tag() }}
+                            <div class="form-group custom-form">
+                                {{ form.name.label }}
+                                {{ form.name(class='form-control', placeholder="Course Name", value=course.name) }}
+                            </div>
+                            <div class="form-group">
+                                {{ form.icon.label }}
+                                {{ form.icon(class='form-control', placeholder="FlatIcon", value=course.icon) }}
+                            </div>
+                            <div class="form-group">
+                                {{ form.category.label }}
+                                {{ form.category(class="form-control", value=course.category_id) }}
+                            </div>
+                            <div class="form-group">
+                                {{ form.video.label }}
+                                {{ form.video(class="form-control", placeholder='Video Thumbnail', value=course.video if course.video_thumbnail else '') }}
+                            </div>
+                            <div class="form-group">
+                                {{ form.video_thumbnail.label }}
+                                {{ form.video_thumbnail(class="form-control", placeholder='Video Link', value=course.video_thumbnail if course.video_thumbnail else '') }}
+                            </div>
+                            <div class="form-group">
+                                {{ form.description.label }}
+                                {{ form.description(class="form-control", placeholder="Type description here", cols="50") }}
+                            </div>
+                            <div class="form-group custom-form">
+                                {{ form.tags.label }}
+                                {{ form.tags(class="form-control", value=tags, placeholder="Type comma-separated keywords", cols="50") }}
+                            </div>
+                            {{ form.submit(class="btn btn-outline-primary") }}
+                        </form>
                     </div>
-                    <div class="form-group">
-                        {{ form.icon(class='form-control', style="margin-right: 15px",  placeholder="FlatIcon", value=course.icon) }}
+                    <div class="col-md-6">
+                        <h3>Other Links</h3>
+                        <ul class="list-unstyled">
+                            <li class="list-item">
+                                <a href="{{ url_for('admin.create_objective', id=course.id) }}">Add Learning Objectives</a>
+                            </li>
+                        </ul>
                     </div>
-                    <div class="form-group">
-                        {{ form.category(class="form-control", style="margin-right: 15px", value=course.category_id) }}
-                    </div>
-                    <div class="form-group">
-                        {{ form.video(class="form-control", style="margin-right: 15px", placeholder='Video Thumbnail', value=course.video) }}
-                    </div>
-                    <div class="form-group">
-                        {{ form.video_thumbnail(class="form-control", style="margin-right: 15px", placeholder='Video Link', value=course.video_thumbnail) }}
-                    </div>
-                    <div class="form-group">
-                        {{ form.description(class="form-control", style="margin-right: 15px", placeholder="Type description here", cols="50") }}
-                    </div>
-                    <div class="form-group custom-form">
-                        {{ form.tags(class="form-control", value=tags, style="margin-right: 15px", placeholder="Type comma-separated keywords", cols="50") }}
-                    </div>
-                    {{ form.submit(class="btn btn-outline-primary") }}
-                </form>
+                </div>
             </div>
         </div>
         <!-- EDIT USER FORM : end -->
@@ -61,13 +80,4 @@
         <!-- USERS TABLE : end -->
     </div>
 </div>
-{% endblock %}
-
-{% block scripts %}
-{{ super() }}
-<script>
-    {# // var roleOption = $(`#role option[value=${roleId}]`);
-    // $('#pattern').val('{{ product.pattern_id }}')
-    // $('#category').val('{{ product.category_id }}') #}
-</script>
 {% endblock %}

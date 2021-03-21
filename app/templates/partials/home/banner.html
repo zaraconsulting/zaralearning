@@ -10,8 +10,8 @@
                             <li>12,455 Courses</li>
                             <li>4.9 Average</li>
                         </ul> -->
-                        <form action="#">
-                            <input type="text" placeholder="Search for a topic" class="form-control" name="text">
+                        <form action="{{ url_for('courses.search') }}">
+                            <input type="text" placeholder="Search for a topic" class="form-control" name="search">
                             <button type="submit"><i class="fas fa-search"></i></button>
                         </form>
                     </div>

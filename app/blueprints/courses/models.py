@@ -1,6 +1,23 @@
 from app import db
 from datetime import datetime as dt
 
+# taggers = db.Table(
+#     'taggers',
+#     db.Column('tagger_id', db.Integer, db.ForeignKey('course.id'))
+#     )
+
+class CourseLearningObjectives(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    description = db.Column(db.String)
+    course_id = db.Column(db.Integer, db.ForeignKey('course.id'))
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+    
+    def __repr__(self):
+        return f'<CourseLearningObjectives: {self.description}>'
+
 class Course(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
@@ -12,6 +29,14 @@ class Course(db.Model):
     date_created = db.Column(db.DateTime, default=dt.utcnow)
     reviews = db.relationship('CourseReview', backref='review', cascade="all,delete", lazy='dynamic')
     tags = db.relationship('CourseTag', backref='tag', cascade="all,delete", lazy='dynamic')
+    learning_objectives = db.relationship('CourseLearningObjectives', backref='learning_objects', lazy='dynamic')
+    # tagged = db.relationship(
+    #     'User', secondary=taggers,
+    #     primaryjoin=(taggers.c.tagger_id == id),
+    #     secondaryjoin=(taggers.c.tagged_id == id),
+    #     backref=db.backref('taggers', lazy='dynamic'),
+    #     lazy='dynamic'
+    # )
     category_id = db.Column(db.Integer, db.ForeignKey('course_category.id'))
 
     def slugify(self):
@@ -31,11 +56,13 @@ class Course(db.Model):
             'id': self.id,
             'name': self.name,
             'icon': self.icon,
+            'slug': self.slug,
             'video': self.video,
             'video_thumbnail': self.video_thumbnail,
             'description': self.description,
             'date_created': self.date_created,
             'category': CourseCategory.query.get(self.category_id),
+            'tags_': CourseTag.query.filter_by(course_id=self.id).all(),
             '_tags': CourseTag.query.filter_by(course_id=self.id).all(),
             'tags': ', '.join([t.text for t in CourseTag.query.filter_by(course_id=self.id).all()]),
             'reviews': [r.to_dict() for r in CourseReview.query.filter_by(course_id=self.id).all()],
@@ -83,7 +110,25 @@ class CourseReview(db.Model):
 class CourseTag(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.String)
+    slug = db.Column(db.String)
     course_id = db.Column(db.Integer, db.ForeignKey('course.id', ondelete='CASCADE'))
+    
+    def slugify(self):
+        self.slug = self.text.lower().replace(' ', '-')
+
+
+    def save(self):
+        self.slugify()
+        db.session.add(self)
+        db.session.commit()
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'text': self.text,
+            'slug': self.slug,
+            'course': Course.query.get(self.course_id).to_dict()
+        }
 
     def __repr__(self):
         return f'<CourseTag: {self.text}...>'
@@ -116,18 +161,25 @@ class ReviewComment(db.Model):
 class CourseCategory(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
+    slug = db.Column(db.String)
     icon = db.Column(db.String)
     courses = db.relationship('Course', backref='course', cascade="all,delete", lazy='dynamic')
+
+    def slugify(self):
+        self.slug = self.name.lower().replace(' ', '-')
 
     def to_dict(self):
         data = {
             'id': self.id,
             'name': self.name,
+            'slug': self.slug,
             'icon': self.icon,
+            'courses': [i.to_dict() for i in self.courses.all()],
         }
         return data
 
     def save(self):
+        self.slugify()
         db.session.add(self)
         db.session.commit()
     

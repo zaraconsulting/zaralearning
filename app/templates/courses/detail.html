@@ -58,15 +58,15 @@
                             <li class="nav-item">
                                 <a href="" data-target="#tab1" data-toggle="tab" class="active nav-link">Overview</a>
                             </li>
-                            <li class="nav-item">
+                            {# <li class="nav-item">
                                 <a href="" data-target="#tab2" data-toggle="tab" class="nav-link">Curriculum</a>
-                            </li>
+                            </li> #}
                             <li class="nav-item">
-                                <a href="" data-target="#tab3" data-toggle="tab" class="nav-link">Advisor</a>
+                                <a href="" data-target="#tab3" data-toggle="tab" class="nav-link">The Pro</a>
                             </li>
-                            <li class="nav-item">
+                            <!-- <li class="nav-item">
                                 <a href="" data-target="#tab4" data-toggle="tab" class="nav-link">Reviews</a>
-                            </li>
+                            </li> -->
                         </ul>
                         <div id="tabsContent" class="tab-content">
                             <div id="tab1" class="tab-pane overview fade active show">
@@ -74,15 +74,14 @@
                                 <p>
                                     {{ c.description }}
                                 </p>
-                                <!-- <h4>Learning Objectives</h4>
+                                {# <h4>Learning Objectives</h4>
                                 <ul>
-                                    <li>Be able to use simple tricks and techniques to make self-control easier.</li>
-                                    <li>Actually apply these strategies and make a deliberate effort to understand their effects</li>
-                                    <li>Have a huge advantage when it comes to sticking to your diet</li>
+                                    {% for o in c.learning_objectives %}
                                     <li>Meeting your fitness goals, and leading a healthier lifestyle.</li>
-                                </ul> -->
+                                    {% endfor %}
+                                </ul> #}
                             </div>
-                            <div id="tab2" class="tab-pane curriculum fade">
+                            {# <div id="tab2" class="tab-pane curriculum fade">
                                 <p>
                                     Placing assured be if removed it besides on. Far shed each high read are men over day. Afraid we praise lively he suffer family estate is. Ample order up in of in ready. Timed blind had now those ought set often which. Or snug dull he show more true wish. No at many deny away miss evil. On in so indeed spirit an mother. Amounted old strictly but marianne admitted. People former is remove remain as.
                                 </p>
@@ -194,7 +193,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </div> #}
                             <div id="tab3" class="tab-pane advisor fade">
                                 <div class="advisor-items">
                                     <!-- Single Item -->
@@ -388,19 +387,10 @@
                         <div class="course-includes">
                             <ul>
                                 <li>
-                                    <i class="fas fa-copy"></i> Lectures <span class="float-right">8</span>
-                                </li>
-                                <li>
                                     <i class="fas fa-clock"></i> Duration <span class="float-right">5.7 Hours</span>
                                 </li>
                                 <li>
                                     <i class="fas fa-sliders-h"></i> Skill level <span class="float-right">All Levels</span>
-                                </li>
-                                <li>
-                                    <i class="fas fa-language"></i> Language <span class="float-right">English</span>
-                                </li>
-                                <li>
-                                    <i class="fas fa-users"></i> Students <span class="float-right">12K</span>
                                 </li>
                             </ul>
                         </div>
@@ -416,27 +406,14 @@
                 <!-- Single Item -->
 
                 <!-- Single Item -->
-                {% if c._tags %}
+                {% if c.tags_ %}
                 <div class="item course-category">
                     <div class="content">
                         <h4>Search by Tags</h4>
                         <ul>
-                            {% for t in c._tags %}
-                                <a href="#" style="margin-right:10px;">{{ t.text }}</a>
-                                <!-- <a href="#">{{ t.text }} <span>23</span></a> -->
+                            {% for t in c.tags_ %}
+                                <a href="{{ url_for('courses.tags', name=t.text) }}" style="margin-right:10px;">{{ t.text }}</a>
                             {% endfor %}
-                            <!-- <li>
-                                <a href="#">Social Science <span>0</span></a>
-                            </li>
-                            <li>
-                                <a href="#">Business Management <span>12</span></a>
-                            </li>
-                            <li>
-                                <a href="#">Online Learning <span>17</span></a>
-                            </li>
-                            <li>
-                                <a href="#">Course Management <span>0</span></a>
-                            </li> -->
                         </ul>
                     </div>
                 </div>
@@ -448,66 +425,17 @@
                     <div class="content">
                         <h4>Related Courses</h4>
                         <div class="related-courses-items">
+                            {% for r in related %}
                             <div class="item">
                                 <div class="content">
                                     <div class="thumb">
-                                        <a href="#">
-                                            <img src="{{ url_for('static', filename='assets/img/800x800.png') }}" alt="Thumb">
+                                        <a href="{{ url_for('courses.detail', name=r.slug) }}">
+                                            <img src="{{ aws_bucket_image_location }}/{{ r.video_thumbnail }}" alt="Thumb">
                                         </a>
                                     </div>
                                     <div class="info">
                                         <h5>
-                                            <a href="#">How to Make Beautiful Landscape photos?</a>
-                                        </h5>
-                                        <div class="rating">
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star-half-alt"></i>
-                                            <span>4.5 (1.3k)</span>
-                                        </div>
-                                        <div class="meta">
-                                            <i class="fas fa-user"></i> By <a href="#">Tami Bua</a> 
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="item">
-                                <div class="content">
-                                    <div class="thumb">
-                                        <a href="#">
-                                            <img src="{{ url_for('static', filename='assets/img/800x800.png') }}" alt="Thumb">
-                                        </a>
-                                    </div>
-                                    <div class="info">
-                                        <h5>
-                                            <a href="#">Learn PHP Programming From Scratch</a>
-                                        </h5>
-                                        <div class="rating">
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star-half-alt"></i>
-                                            <span>4.5 (6k)</span>
-                                        </div>
-                                        <div class="meta">
-                                            <i class="fas fa-user"></i> By <a href="#">John Bro</a> 
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="item">
-                                <div class="content">
-                                    <div class="thumb">
-                                        <a href="#">
-                                            <img src="{{ url_for('static', filename='assets/img/800x800.png') }}" alt="Thumb">
-                                        </a>
-                                    </div>
-                                    <div class="info">
-                                        <h5>
-                                            <a href="#">Profession paython learing</a>
+                                            <a href="{{ url_for('courses.detail', name=r.slug) }}">{{ r.name }}</a>
                                         </h5>
                                         <div class="rating">
                                             <i class="fas fa-star"></i>
@@ -523,6 +451,7 @@
                                     </div>
                                 </div>
                             </div>
+                            {% endfor %}
                         </div>
                     </div>
                 </div>

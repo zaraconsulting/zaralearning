@@ -43,8 +43,8 @@ class AdminEditCourseForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
     description = TextAreaField('Description', validators=[DataRequired()])
     icon = StringField('Icon', validators=[DataRequired()])
-    video = StringField('Video', validators=[DataRequired()])
-    video_thumbnail = StringField('Thumbnail', validators=[DataRequired()])
+    video = StringField('Video')
+    video_thumbnail = StringField('Thumbnail')
     category = SelectField(choices=[], coerce=int)
     tags = TextAreaField('Tags')
     submit = SubmitField('Edit Course')
@@ -58,10 +58,9 @@ class AdminResetPasswordForm(FlaskForm):
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Reset Password')
 
-class AdminCreatePatternForm(FlaskForm):
-    name = StringField()
-    image = StringField()
-    submit = SubmitField('Create Pattern')
+class AdminCreateObjective(FlaskForm):
+    description = TextAreaField(validators=[DataRequired()])
+    submit = SubmitField('Create Objective')
     
 class AdminEditPatternForm(FlaskForm):
     name = SelectField(choices=[], coerce=int)

@@ -2,12 +2,17 @@
     <div class="container">
         <div class="courses-items">
             <div class="row">
+                {% if not courses %}
+                <div style="margin: 0 auto;">
+                    <h2>You have returned no results</h2>
+                </div>
+                {% else %}
                 {% for c in courses %}
                 <!-- Single item -->
                 <div class="single-item col-lg-4 col-md-6">
                     <div class="item">
                         <div class="thumb">
-                            <img src="{{ aws_bucket_image_location }}/{{ c.video_thumbnail }}" alt="Thumb">
+                            <img src="{{ aws_bucket_image_location }}/{{ c.video_thumbnail }}" alt="{{ c.name }}">
                             <div class="course-info">
                                 <ul>
                                     <li><i class="fas fa-clock"></i> 45 Hours</li>
@@ -55,22 +60,24 @@
                 </div>
                 <!-- End Single item -->
                 {% endfor %}
+                {% endif %}
             </div>
 
             <!-- Pagination -->
             <div class="row">
                 <div class="col-md-12 pagi-area text-center">
+                    {% if courses %}
                     <nav aria-label="navigation">
                         <ul class="pagination">
-                            <li class="page-item"><a class="page-link" href="#"><i
-                                        class="fas fa-angle-double-left"></i></a></li>
-                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                            <li class="page-item"><a class="page-link" href="#">2</a></li>
-                            <li class="page-item"><a class="page-link" href="#">3</a></li>
-                            <li class="page-item"><a class="page-link" href="#"><i
-                                        class="fas fa-angle-double-right"></i></a></li>
+                            {% if prev_url %}
+                            <li class="page-item"><a class="page-link" href="{{ prev_url }}"><i class="fas fa-angle-double-left"></i>Previous Page &nbsp;</a></li>
+                            {% endif %}
+                            {% if next_url %}
+                            <li class="page-item"><a class="page-link" href="{{ next_url }}"> &nbsp;Next Page<i class="fas fa-angle-double-right"></i></a></li>
+                            {% endif %}
                         </ul>
                     </nav>
+                    {% endif %}
                 </div>
             </div>
         </div>

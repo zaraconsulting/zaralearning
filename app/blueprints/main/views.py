@@ -5,7 +5,7 @@ from app.blueprints.courses.models import CourseCategory, Course
 @main.route('/')
 def home():
     context = {
-        'course_categories': CourseCategory.query.order_by(CourseCategory.name).all(),
+        'course_categories': [c.to_dict() for c in CourseCategory.query.order_by(CourseCategory.name).all()],
         'courses': Course.query.all(),
         'subscription_basic': app.config.get('SUBSCRIPTION_BASIC')
     }

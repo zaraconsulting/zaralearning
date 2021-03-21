@@ -62,8 +62,8 @@
 
             <!-- Start Atribute Navigation -->
             <div class="attr-nav">
-                <form action="#">
-                    <input type="text" placeholder="Search" class="form-control" name="text">
+                <form action="{{ url_for('courses.search') }}">
+                    <input type="text" placeholder="Search" class="form-control" name="search" />
                     <button type="submit">
                         <i class="fa fa-search"></i>
                     </button>

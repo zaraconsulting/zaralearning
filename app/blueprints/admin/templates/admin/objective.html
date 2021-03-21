@@ -1,0 +1,36 @@
+{% extends 'admin/layout.html' %}
+
+{% block body %}
+<div class="container-fluid">
+    <h1 class="mt-4">Dashboard</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item active">Course Objectives</li>
+    </ol>
+
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-user mr-1"></i>
+            Edit Course Objective
+        </div>
+        <!-- EDIT USER FORM : begin -->
+        <div class="card-body">
+            <div class="table-responsive">
+                <h5>Create a Course Objective</h5>
+
+                <form action="{{ url_for('admin.create_objective') }}" method="POST">
+                    {{ form.hidden_tag() }}
+                    <div class="form-group custom-form">
+                        {{ form.description(class='form-control', placeholder='Course Objective Description') }}
+                        {{ form.submit(class="btn btn-outline-primary") }}
+                </form>
+            </div>
+        </div>
+        <!-- EDIT USER FORM : end -->
+
+        <!-- USERS TABLE : begin -->
+        <!-- {# {% include './admin/partials/hair/products-table.html' %} #} -->
+        <!-- USERS TABLE : end -->
+    </div>
+</div>
+{% endblock %}

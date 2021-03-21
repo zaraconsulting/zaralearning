@@ -1,14 +1,16 @@
 from .import bp as admin
 from flask import render_template, redirect, url_for, request, flash, session, current_app as app, jsonify
-from app.blueprints.courses.models import Course, CourseCategory, CourseTag
+from app.blueprints.courses.models import Course, CourseCategory, CourseTag, CourseLearningObjectives
 from app.blueprints.auth.models import Account
-from .forms import AdminEditCourseCategoryForm, AdminLoginForm, AdminEditUserForm, AdminCreateCourseForm, AdminResetPasswordRequestForm, AdminResetPasswordForm, AdminEditCourseForm
+from .forms import AdminEditCourseCategoryForm, AdminLoginForm, AdminEditUserForm, AdminCreateCourseForm, AdminResetPasswordRequestForm, AdminResetPasswordForm, AdminEditCourseForm, AdminCreateObjective
 from flask_login import current_user, login_user, logout_user
 from app import db
 import requests, stripe, time, boto3, os
 from requests_toolbelt.multipart.encoder import MultipartEncoder
 from datetime import datetime as dt
 from werkzeug.utils import secure_filename
+from botocore.exceptions import ClientError
+import glob
 
 @admin.route('/', methods=['GET'])
 def index():
@@ -49,6 +51,56 @@ def logout():
     logout_user()
     flash('You have logged out successfully', 'info')
     return redirect(url_for('admin.index'))
+
+@admin.route('/reset_password_request', methods=['GET', 'POST'])
+def reset_password_request():
+    if current_user.is_authenticated:
+        return redirect(url_for('admin.index'))
+    form = AdminResetPasswordRequestForm()
+    if form.validate_on_submit():
+        user = Account.query.filter_by(email=form.email.data.lower()).first()
+        if not user:
+            flash('Account holder with that email address was not found', 'warning')
+            return redirect(url_for('admin.reset_password_request'))
+        if user:
+            send_password_reset_email(user)
+            flash("Check your email for instructions to reset your password", 'primary')
+            return redirect(url_for('admin.login'))
+    return render_template('admin/authentication/reset_password_request.html', title='Reset Password', form=form)
+
+@admin.route('/reset_password/<token>', methods=['GET', 'POST'])
+def reset_password(token):
+    if current_user.is_authenticated:
+        return redirect(url_for('admin.index'))
+    
+    user = Account.verify_reset_password_token(token)
+    # print(user)
+    if not user:
+        flash('Your password reset token is probably expired. Follow steps for resetting password again.', 'warning')
+        return redirect(url_for('admin.login'))
+    form = AdminResetPasswordForm()
+    if form.validate_on_submit():
+        # print(form.password.data)
+        user.set_password(form.password.data)
+        db.session.commit()
+        flash('Your password has been reset', 'success')
+        return redirect(url_for('admin.login'))
+    return render_template('admin/reset_password.html', user=user, form=form)
+
+
+@admin.route('/objective/course', methods=['GET', 'POST'])
+def create_objective():
+    form = AdminCreateObjective()
+    session['course_id'] = request.args.get('id')
+    if not current_user.is_authenticated:
+        return redirect(url_for('admin.login'))
+    if form.validate_on_submit():
+        o = CourseLearningObjectives(description=form.description.data, course_id=session.get('course_id'))
+        o.save()
+        flash('Course Learning Objective successfully added.', 'success')
+        return redirect(request.referrer)
+    return render_template('admin/objective.html', form=form)
+
 
 @admin.route('/courses', methods=['GET'])
 def courses():
@@ -111,35 +163,105 @@ def create_course():
     filename_img = str(int(time.time() * 10)) + '.png'
     filename_vid = str(int(time.time() * 10)) + '.mp4'
 
-    if not os.path.isdir('temp'):
-        os.mkdir('temp')
-    form.image.data.save(f"temp/{filename_img}")
-    form.video.data.save(f"temp/{filename_vid}")
+    try:
+        if not os.path.isdir('temp'):
+            os.mkdir('temp')
+        form.image.data.save(f"temp/{filename_img}")
+        form.video.data.save(f"temp/{filename_vid}")
 
-    s3_client = boto3.client('s3', aws_access_key_id=app.config.get('AWS_ACCESS_KEY_ID'), aws_secret_access_key=app.config.get('AWS_SECRET_ACCESS_KEY'))
-    # upload image
-    s3_client.upload_fileobj(open(f'temp/{filename_img}', 'rb'), app.config.get('AWS_S3_BUCKET'), 'courses/thumbnails/' + filename_img, ExtraArgs={ 'ACL': 'public-read' })
-    # upload video
-    s3_client.upload_fileobj(open(f'temp/{filename_vid}', 'rb'), app.config.get('AWS_S3_BUCKET'), 'courses/videos/' + filename_vid, ExtraArgs={ 'ACL': 'public-read' })
+        s3_client = boto3.client('s3', aws_access_key_id=app.config.get('AWS_ACCESS_KEY_ID'), aws_secret_access_key=app.config.get('AWS_SECRET_ACCESS_KEY'))
+        # upload image
+        s3_client.upload_fileobj(open(f'temp/{filename_img}', 'rb'), app.config.get('AWS_S3_BUCKET'), 'courses/thumbnails/' + filename_img, ExtraArgs={ 'ACL': 'public-read' })
+        # upload video
+        s3_client.upload_fileobj(open(f'temp/{filename_vid}', 'rb'), app.config.get('AWS_S3_BUCKET'), 'courses/videos/' + filename_vid, ExtraArgs={ 'ACL': 'public-read', 'ContentType': 'video/mp4' })
 
-    course = Course()
-    data = dict(name=form.name.data, icon=form.icon.data, video=filename_vid, video_thumbnail=filename_img, description=form.description.data, category_id=form.category.data)
-    course.from_dict(data)
-    course.save()
-    os.remove(f'temp/{filename_img}')
-    os.remove(f'temp/{filename_vid}')
-    flash('Course created successfully', 'success')
+        course = Course()
+        data = dict(name=form.name.data, icon=form.icon.data, video=filename_vid, video_thumbnail=filename_img, description=form.description.data, category_id=form.category.data)
+        course.from_dict(data)
+        course.save()
+
+        # Remove all files in temp folder
+        files = glob.glob('/temp/*')
+        for f in files:
+            os.remove(f)
+        flash('Course created successfully', 'success')
+    except Exception as err:
+        print(err)
+        flash('There was an error', 'danger')
     return redirect(url_for('admin.courses'))
 
 @admin.route('/course/delete')
 def delete_course():
     if not current_user.is_authenticated:
         return redirect(url_for('admin.login'))
+    try:
+        _id = int(request.args.get('id'))
+        course = Course.query.get(_id)
+        course.delete()
+        # TODO: find the image/video in the s3 buckets
+        # TODO: delete them
+        # s3_client = boto3.client('s3', aws_access_key_id=app.config.get('AWS_ACCESS_KEY_ID'), aws_secret_access_key=app.config.get('AWS_SECRET_ACCESS_KEY'))
+        # print(help(s3_client.delete_object))
+        # s3_client.delete_object(app.config('AWS_S3_BUCKET'), f'courses/thumbnails/{course.video_thumbnail}')
+        # s3_client.delete_object(app.config('AWS_S3_BUCKET'), f'courses/videos/{course.video}')
+        flash('Course deleted successfully', 'info')
+        return redirect(url_for('admin.courses'))
+    except ClientError as err:
+        print(err)
+        flash('There was a problem deleting the course', 'danger')
+        return redirect(url_for('admin.courses'))
+
+@admin.route('/course_categories', methods=['GET'])
+def course_categories():
+    if not current_user.is_authenticated:
+        return redirect(url_for('admin.login'))
+    return render_template('admin/course-categories.html', course_categories=[i.to_dict() for i in CourseCategory.query.all()])
+
+
+@admin.route('/course_categories', methods=['POST'])
+def create_course_category():
+    if not current_user.is_authenticated:
+        return redirect(url_for('admin.login'))
+    if request.method == 'POST':
+        c = CourseCategory()
+        data = dict(name=request.form.get('name'),
+                    icon=request.form.get('icon'))
+        c.from_dict(data)
+        c.save()
+        flash('Course created successfully', 'success')
+    return redirect(url_for('admin.course_categories'))
+
+
+@admin.route('/course/category/edit', methods=['GET', 'POST'])
+def edit_course_category():
+    pass
+    if not current_user.is_authenticated:
+        return redirect(url_for('admin.login'))
+    c = CourseCategory.query.get(request.args.get('id'))
+    form = AdminEditCourseCategoryForm()
+    if request.method == 'POST':
+        form = AdminEditCourseCategoryForm()
+        data = dict(name=form.name.data, icon=form.icon.data)
+        c.from_dict(data)
+        db.session.commit()
+        flash('Edited course category successfully', 'info')
+        return redirect(url_for('admin.edit_course_category', id=c.id))
+    context = {
+        'c': c,
+        'form': form
+    }
+    return render_template('admin/course-category-edit.html', **context)
+
+
+@admin.route('/course/category/delete')
+def delete_course_category():
+    if not current_user.is_authenticated:
+        return redirect(url_for('admin.login'))
     _id = int(request.args.get('id'))
-    course = Course.query.get(_id)
-    course.delete()
+    course_category = CourseCategory.query.get(_id)
+    course_category.delete()
     flash('Course deleted successfully', 'info')
-    return redirect(url_for('admin.courses'))
+    return redirect(url_for('admin.course_categories'))
 
 @admin.route('/users', methods=['GET', 'POST'])
 def users():
@@ -250,92 +372,3 @@ def delete_role():
     role.delete_role()
     flash('Course deleted successfully', 'info')
     return redirect(url_for('admin.roles'))
-
-
-@admin.route('/reset_password_request', methods=['GET', 'POST'])
-def reset_password_request():
-    if current_user.is_authenticated:
-        return redirect(url_for('admin.index'))
-    form = AdminResetPasswordRequestForm()
-    if form.validate_on_submit():
-        user = Account.query.filter_by(email=form.email.data.lower()).first()
-        if not user:
-            flash('Account holder with that email address was not found', 'warning')
-            return redirect(url_for('admin.reset_password_request'))
-        if user:
-            send_password_reset_email(user)
-            flash("Check your email for instructions to reset your password", 'primary')
-            return redirect(url_for('admin.login'))
-    return render_template('admin/authentication/reset_password_request.html', title='Reset Password', form=form)
-
-@admin.route('/reset_password/<token>', methods=['GET', 'POST'])
-def reset_password(token):
-    if current_user.is_authenticated:
-        return redirect(url_for('admin.index'))
-    
-    user = Account.verify_reset_password_token(token)
-    # print(user)
-    if not user:
-        flash('Your password reset token is probably expired. Follow steps for resetting password again.', 'warning')
-        return redirect(url_for('admin.login'))
-    form = AdminResetPasswordForm()
-    if form.validate_on_submit():
-        # print(form.password.data)
-        user.set_password(form.password.data)
-        db.session.commit()
-        flash('Your password has been reset', 'success')
-        return redirect(url_for('admin.login'))
-    return render_template('admin/reset_password.html', user=user, form=form)
-
-
-@admin.route('/course_categories', methods=['GET'])
-def course_categories():
-    if not current_user.is_authenticated:
-        return redirect(url_for('admin.login'))
-    return render_template('admin/course-categories.html', course_categories=[i.to_dict() for i in CourseCategory.query.all()])
-
-
-@admin.route('/course_categories', methods=['POST'])
-def create_course_category():
-    if not current_user.is_authenticated:
-        return redirect(url_for('admin.login'))
-    if request.method == 'POST':
-        c = CourseCategory()
-        data = dict(name=request.form.get('name'),
-                    icon=request.form.get('icon'))
-        c.from_dict(data)
-        c.save()
-        flash('Course created successfully', 'success')
-    return redirect(url_for('admin.course_categories'))
-
-
-@admin.route('/course/category/edit', methods=['GET', 'POST'])
-def edit_course_category():
-    pass
-    if not current_user.is_authenticated:
-        return redirect(url_for('admin.login'))
-    c = CourseCategory.query.get(request.args.get('id'))
-    form = AdminEditCourseCategoryForm()
-    if request.method == 'POST':
-        form = AdminEditCourseCategoryForm()
-        data = dict(name=form.name.data, icon=form.icon.data)
-        c.from_dict(data)
-        db.session.commit()
-        flash('Edited course category successfully', 'info')
-        return redirect(url_for('admin.edit_course_category', id=c.id))
-    context = {
-        'c': c,
-        'form': form
-    }
-    return render_template('admin/course-category-edit.html', **context)
-
-
-@admin.route('/course/category/delete')
-def delete_course_category():
-    if not current_user.is_authenticated:
-        return redirect(url_for('admin.login'))
-    _id = int(request.args.get('id'))
-    course_category = CourseCategory.query.get(_id)
-    course_category.delete()
-    flash('Course deleted successfully', 'info')
-    return redirect(url_for('admin.course_categories'))
