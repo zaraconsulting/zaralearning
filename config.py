@@ -18,3 +18,4 @@ class Config:
     AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
     AWS_S3_BUCKET = os.getenv('AWS_S3_BUCKET')
     POSTS_PER_PAGE = int(os.getenv('POSTS_PER_PAGE'))
+    BASEDIR = basedir

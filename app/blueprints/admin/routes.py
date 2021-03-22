@@ -2,7 +2,7 @@ from .import bp as admin
 from flask import render_template, redirect, url_for, request, flash, session, current_app as app, jsonify
 from app.blueprints.courses.models import Course, CourseCategory, CourseTag, CourseLearningObjectives
 from app.blueprints.auth.models import Account
-from .forms import AdminEditCourseCategoryForm, AdminLoginForm, AdminEditUserForm, AdminCreateCourseForm, AdminResetPasswordRequestForm, AdminResetPasswordForm, AdminEditCourseForm, AdminCreateObjective
+from .forms import AdminEditCourseCategoryForm, AdminCreateCourseCategoryForm, AdminLoginForm, AdminEditUserForm, AdminCreateCourseForm, AdminResetPasswordRequestForm, AdminResetPasswordForm, AdminEditCourseForm, AdminCreateObjective
 from flask_login import current_user, login_user, logout_user
 from app import db
 import requests, stripe, time, boto3, os
@@ -10,7 +10,7 @@ from requests_toolbelt.multipart.encoder import MultipartEncoder
 from datetime import datetime as dt
 from werkzeug.utils import secure_filename
 from botocore.exceptions import ClientError
-import glob
+from app._helpers import clear_temp_dir
 
 @admin.route('/', methods=['GET'])
 def index():
@@ -181,9 +181,7 @@ def create_course():
         course.save()
 
         # Remove all files in temp folder
-        files = glob.glob('/temp/*')
-        for f in files:
-            os.remove(f)
+        clear_temp_dir()
         flash('Course created successfully', 'success')
     except Exception as err:
         print(err)
@@ -213,38 +211,78 @@ def delete_course():
 
 @admin.route('/course_categories', methods=['GET'])
 def course_categories():
+    form = AdminCreateCourseCategoryForm()
     if not current_user.is_authenticated:
         return redirect(url_for('admin.login'))
-    return render_template('admin/course-categories.html', course_categories=[i.to_dict() for i in CourseCategory.query.all()])
+    return render_template('admin/course-categories.html', course_categories=[i.to_dict() for i in CourseCategory.query.all()], form=form)
 
 
 @admin.route('/course_categories', methods=['POST'])
 def create_course_category():
     if not current_user.is_authenticated:
         return redirect(url_for('admin.login'))
-    if request.method == 'POST':
-        c = CourseCategory()
-        data = dict(name=request.form.get('name'),
-                    icon=request.form.get('icon'))
-        c.from_dict(data)
-        c.save()
-        flash('Course created successfully', 'success')
+
+    form = AdminCreateCourseCategoryForm()
+    filename_img = str(int(time.time() * 10)) + '.png'
+    try:
+        if not os.path.isdir('temp'):
+            os.mkdir('temp')
+            form.image.data.save(f"temp/{filename_img}")
+
+            s3_client = boto3.client('s3', aws_access_key_id=app.config.get('AWS_ACCESS_KEY_ID'), aws_secret_access_key=app.config.get('AWS_SECRET_ACCESS_KEY'))
+            # upload image
+            s3_client.upload_fileobj(open(f'temp/{filename_img}', 'rb'), app.config.get('AWS_S3_BUCKET'), 'courses/categories/' + filename_img, ExtraArgs={ 'ACL': 'public-read' })
+
+            c = CourseCategory()
+            data = dict(name=form.name.data, icon=form.icon.data, image=filename_img)
+            c.from_dict(data)
+            c.save()
+
+            # Remove all files in temp folder
+            # TODO: Finish this part
+            clear_temp_dir()
+        flash('Course Category created successfully', 'success')
+    except:
+        flash('There was an error creating the Course Category', 'danger')
     return redirect(url_for('admin.course_categories'))
 
 
 @admin.route('/course/category/edit', methods=['GET', 'POST'])
 def edit_course_category():
-    pass
     if not current_user.is_authenticated:
         return redirect(url_for('admin.login'))
+    
     c = CourseCategory.query.get(request.args.get('id'))
     form = AdminEditCourseCategoryForm()
+    form.name.data = c.name
+    form.icon.data = c.icon
+
     if request.method == 'POST':
-        form = AdminEditCourseCategoryForm()
-        data = dict(name=form.name.data, icon=form.icon.data)
-        c.from_dict(data)
-        db.session.commit()
-        flash('Edited course category successfully', 'info')
+        # # Remove all files in temp folder
+        
+        if not os.path.isdir('temp'):
+            os.mkdir('temp')
+
+        if form.image_verify.data:
+            form.image.data.save(f"temp/{form.image.data.filename}")
+            
+            # Connect to S3 client
+            s3_client = boto3.client('s3', aws_access_key_id=app.config.get('AWS_ACCESS_KEY_ID'), aws_secret_access_key=app.config.get('AWS_SECRET_ACCESS_KEY'))
+
+            # upload image
+            s3_client.upload_fileobj(open(f'temp/{form.image.data.filename}', 'rb'), app.config.get('AWS_S3_BUCKET'), 'courses/categories/' + form.image.data.filename, ExtraArgs={ 'ACL': 'public-read' })
+
+            c.name = request.form.get('name')
+            c.icon = request.form.get('icon')
+            c.image = form.image.data.filename
+            db.session.commit()
+            os.remove(f'{app.config.get("BASEDIR")}/temp/{form.image.data.filename}')
+            flash('Edited Course Category successfully', 'info')
+        else:
+            flash('You did not verify an image upload. Please make sure you meant to click the checkbox.', 'warning')
+            c.name = request.form.get('name')
+            c.icon = request.form.get('icon')
+            db.session.commit()
         return redirect(url_for('admin.edit_course_category', id=c.id))
     context = {
         'c': c,

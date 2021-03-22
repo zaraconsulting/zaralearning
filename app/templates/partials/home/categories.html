@@ -21,7 +21,7 @@
                 </div>
                 <div class="thumb">
                     <span>{{ cat.courses|length }} Cours{% if cat.courses|length == 1 %}e{% else %}es{% endif %}</span>
-                    <img src="{{ url_for('static', filename='assets/img/800x600.png') }}" alt="Thumb">
+                    <img style="height: 360px; width: 360px" class="img-fluid" src="{{ aws_bucket_cat_image_location }}/{{ cat.image }}" alt="Thumb">
                 </div>
             </div>
             <!-- End Single Item -->

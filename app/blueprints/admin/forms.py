@@ -49,6 +49,25 @@ class AdminEditCourseForm(FlaskForm):
     tags = TextAreaField('Tags')
     submit = SubmitField('Edit Course')
 
+class AdminCreateObjective(FlaskForm):
+    description = TextAreaField(validators=[DataRequired()])
+    submit = SubmitField('Create Objective')
+
+class AdminCreateCourseCategoryForm(FlaskForm):
+    name = StringField('Name', validators=[DataRequired()])
+    image = FileField('Upload Image', validators=[DataRequired()])
+    icon = StringField('Icon', validators=[DataRequired()])
+    submit = SubmitField('Create Course Category')
+
+class AdminEditCourseCategoryForm(FlaskForm):
+    name = StringField('Name')
+    # name = StringField('Name', validators=[DataRequired()])
+    image = FileField('Upload Image')
+    image_verify = BooleanField('Click to verify upload.')
+    # icon = StringField('Icon', validators=[DataRequired()])
+    icon = StringField('Icon')
+    submit = SubmitField('Edit Course Category')
+
 class AdminResetPasswordRequestForm(FlaskForm):
     email = StringField('Email', validators=[Email(), DataRequired()])
     submit = SubmitField('Request Password Reset')
@@ -57,20 +76,3 @@ class AdminResetPasswordForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Reset Password')
-
-class AdminCreateObjective(FlaskForm):
-    description = TextAreaField(validators=[DataRequired()])
-    submit = SubmitField('Create Objective')
-    
-class AdminEditPatternForm(FlaskForm):
-    name = SelectField(choices=[], coerce=int)
-    image = StringField()
-    submit = SubmitField('Update Pattern')
-
-class AdminCreateHairTipForm(FlaskForm):
-    description = TextAreaField()
-    submit = SubmitField('Create Hair Tip')
-    
-class AdminEditHairTipForm(FlaskForm):
-    description = TextAreaField()
-    submit = SubmitField('Update Hair Tip')

@@ -18,24 +18,29 @@
             <div class="table-responsive">
                 <h5>Edit a Course Category</h5>
 
-                <form class="form-inline" action="{{ url_for('admin.edit_course_category', id=c.id) }}" method="POST">
+                <form action="{{ url_for('admin.edit_course_category', id=c.id) }}" method="POST"  enctype="multipart/form-data">
                     {{ form.hidden_tag() }}
-                    <div class="form-group custom-form">
-                        {{ form.name(class='form-control', placeholder='Course Category Name', value=c.name) }}
-                        {{ form.icon(class='form-control', placeholder="FlatIcon", value=c.icon) }}
-                        {{ form.submit(class="btn btn-outline-primary") }}
-                </form>
-
-                {# <form class="form-inline edit-user-form" method="POST">
-                    {{ form.hidden_tag() }}
-                    <div class="form-group custom-form">
-                        {{ form.pattern(class="form-control", style="margin-right: 15px") }}
-                        {{ form.category(class="form-control", style="margin-right: 15px") }}
-                        {{ form.price(class='form-control', placeholder="Price", value=product.price) }}
-                        {{ form.length(class='form-control', placeholder="Hair Length", value=product.length) }}
-                        {{ form.submit(class="btn btn-outline-primary") }}
+                    <div class="form-group">
+                        {{ form.name.label }}
+                        {{ form.name(class='form-control', placeholder='What\'s the name of the course?') }}
                     </div>
-                </form> #}
+                    <div class="form-group">
+                        {{ form.icon.label }}
+                        {{ form.icon(class='form-control', placeholder='Type in a FlatIcon reference i.e. "innovation"') }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.image.label }}
+                        {{ form.image(class='form-control-file', style='margin-bottom:15px;') }}
+                        <div class="form-check">
+                          <label class="form-check-label">
+                              {{ form.image_verify(class="form-check-input", checked=False) }}
+                            <!-- <input type="checkbox" class="form-check-input" name="" id="" value="checkedValue" checked> -->
+                            {{ form.image_verify.label }}
+                          </label>
+                        </div>
+                    </div>
+                    <input type="submit" class="btn btn-outline-primary" value="Edit Course Category">
+                </form>
             </div>
         </div>
         <!-- EDIT USER FORM : end -->

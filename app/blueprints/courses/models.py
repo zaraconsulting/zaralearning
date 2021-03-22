@@ -162,6 +162,7 @@ class CourseCategory(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
     slug = db.Column(db.String)
+    image = db.Column(db.String)
     icon = db.Column(db.String)
     courses = db.relationship('Course', backref='course', cascade="all,delete", lazy='dynamic')
 
@@ -173,10 +174,16 @@ class CourseCategory(db.Model):
             'id': self.id,
             'name': self.name,
             'slug': self.slug,
+            'image': self.image,
             'icon': self.icon,
             'courses': [i.to_dict() for i in self.courses.all()],
         }
         return data
+
+    def from_dict(self, data):
+        for field in ['name', 'image', 'icon']:
+            if field in data:
+                setattr(self, field, data[field])
 
     def save(self):
         self.slugify()

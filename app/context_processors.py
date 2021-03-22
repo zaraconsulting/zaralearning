@@ -15,5 +15,6 @@ def make_context():
         stripe_test_key=app.config.get('STRIPE_SECRET_KEY'),
         home_url=app.config.get('HOME_URL'),
         aws_bucket_image_location=f'https://{app.config.get("AWS_S3_BUCKET")}.s3.amazonaws.com/courses/thumbnails',
-        aws_bucket_video_location=f'https://{app.config.get("AWS_S3_BUCKET")}.s3.amazonaws.com/courses/videos'
+        aws_bucket_video_location=f'https://{app.config.get("AWS_S3_BUCKET")}.s3.amazonaws.com/courses/videos',
+        aws_bucket_cat_image_location=f'https://{app.config.get("AWS_S3_BUCKET")}.s3.amazonaws.com/courses/categories'
         )

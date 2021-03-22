@@ -17,12 +17,21 @@
         <div class="card-body">
             <div class="table-responsive">
                 <h5>Create a Course Category</h5>
-                <form class="form-inline" action="{{ url_for('admin.create_course_category') }}" method="POST">
-                    <div class="form-group custom-form">
-                        <input type="text" name="name" id="" class="form-control" placeholder="Create a course category">
-                        <input type="text" name="icon" id="" class="form-control" placeholder="FlatIcon">
-                        <input type="submit" class="btn btn-outline-primary" id="" value="Create Course Category">
+                <form action="{{ url_for('admin.create_course_category') }}" method="POST" enctype="multipart/form-data">
+                    {{ form.hidden_tag() }}
+                    <div class="form-group">
+                        {{ form.name.label }}
+                        {{ form.name(class="form-control", placeholder="Create a course category") }}
                     </div>
+                    <div class="form-group">
+                        {{ form.icon.label }}
+                        {{ form.icon(class="form-control", placeholder='Type in a FlatIcon reference i.e. "innovation"') }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.image.label }}
+                        {{ form.image(class='form-control-file', style='margin-bottom:15px;') }}
+                    </div>
+                    <input type="submit" class="btn btn-outline-primary" id="" value="Create Course Category">
                 </form>
             </div>
         </div>
