@@ -42,6 +42,8 @@
     <!-- jQuery Frameworks -->
     {% block scripts %}
         {% include './partials/scripts.html' %}
+        {{ moment.include_jquery() }}
+        {{ moment.include_moment() }}
     {% endblock scripts %}
 
     </body>

@@ -3,10 +3,12 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from config import Config
 from flask_login import LoginManager
+from flask_moment import Moment
 
 db = SQLAlchemy()
 migrate = Migrate()
 login_manager = LoginManager()
+moment = Moment()
 
 
 # Application Factory Pattern
@@ -16,6 +18,7 @@ def create_app(config_class=Config):
 
     db.init_app(app)
     migrate.init_app(app, db)
+    moment.init_app(app)
 
     login_manager.init_app(app)
     login_manager.login_view = 'auth.login'
@@ -26,5 +29,6 @@ def create_app(config_class=Config):
     with app.app_context():
         from .import register_blueprints
         from .import context_processors
+        from .import _helpers
 
     return app

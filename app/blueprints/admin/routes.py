@@ -91,15 +91,14 @@ def reset_password(token):
 @admin.route('/objective/course', methods=['GET', 'POST'])
 def create_objective():
     form = AdminCreateObjective()
-    session['course_id'] = request.args.get('id')
     if not current_user.is_authenticated:
         return redirect(url_for('admin.login'))
-    if form.validate_on_submit():
-        o = CourseLearningObjectives(description=form.description.data, course_id=session.get('course_id'))
+    if request.method == 'POST':
+        o = CourseLearningObjectives(description=form.description.data, course_id=request.form.get('course_id'))
         o.save()
         flash('Course Learning Objective successfully added.', 'success')
-        return redirect(request.referrer)
-    return render_template('admin/objective.html', form=form)
+        return redirect(url_for('admin.edit_course', id=request.form.get('course_id')))
+    return render_template('admin/objective.html', form=form, course=Course.query.get(request.args.get('id')).to_dict())
 
 
 @admin.route('/courses', methods=['GET'])
@@ -131,7 +130,22 @@ def edit_course():
     if request.method == 'POST':
         form = AdminEditCourseForm()
         
-        data = dict(name=form.name.data, icon=form.icon.data, video=form.video.data, description=form.description.data, video_thumbnail=f'{form.video_thumbnail.data}', category_id=form.category.data)
+        # Connect to S3 client
+        s3_client = boto3.client('s3', aws_access_key_id=app.config.get('AWS_ACCESS_KEY_ID'), aws_secret_access_key=app.config.get('AWS_SECRET_ACCESS_KEY'))
+        
+        data = dict(name=form.name.data, icon=form.icon.data, description=form.description.data, category_id=form.category.data)
+        if form.video_verify.data:
+            form.video.data.save(f"temp/{form.video.data.filename}")
+            s3_client.upload_fileobj(open(f'temp/{form.video.data.filename}', 'rb'), app.config.get('AWS_S3_BUCKET'), 'courses/videos/' + form.video.data.filename, ExtraArgs={'ContentType': "video/mp4", 'ACL': 'public-read' })
+            data['video'] = form.video.data.filename
+            os.remove(f'{app.config.get("BASEDIR")}/temp/{form.video.data.filename}')
+        
+        if form.video_thumbnail_verify.data:
+            form.video_thumbnail.data.save(f"temp/{form.video_thumbnail.data.filename}")
+            s3_client.upload_fileobj(open(f'temp/{form.video_thumbnail.data.filename}', 'rb'), app.config.get('AWS_S3_BUCKET'), 'courses/thumbnails/' + form.video_thumbnail.data.filename, ExtraArgs={'ContentType': "image/png", 'ACL': 'public-read' })
+            data['video_thumbnail'] = form.video_thumbnail.data.filename
+            os.remove(f'{app.config.get("BASEDIR")}/temp/{form.video_thumbnail.data.filename}')
+
         c.from_dict(data)
         
         [db.session.delete(i) for i in CourseTag.query.filter_by(course_id=c.id).all()]
@@ -171,7 +185,7 @@ def create_course():
 
         s3_client = boto3.client('s3', aws_access_key_id=app.config.get('AWS_ACCESS_KEY_ID'), aws_secret_access_key=app.config.get('AWS_SECRET_ACCESS_KEY'))
         # upload image
-        s3_client.upload_fileobj(open(f'temp/{filename_img}', 'rb'), app.config.get('AWS_S3_BUCKET'), 'courses/thumbnails/' + filename_img, ExtraArgs={ 'ACL': 'public-read' })
+        s3_client.upload_fileobj(open(f'temp/{filename_img}', 'rb'), app.config.get('AWS_S3_BUCKET'), 'courses/thumbnails/' + filename_img, ExtraArgs={'ContentType': "image/png", 'ACL': 'public-read' })
         # upload video
         s3_client.upload_fileobj(open(f'temp/{filename_vid}', 'rb'), app.config.get('AWS_S3_BUCKET'), 'courses/videos/' + filename_vid, ExtraArgs={ 'ACL': 'public-read', 'ContentType': 'video/mp4' })
 
@@ -229,9 +243,11 @@ def create_course_category():
             os.mkdir('temp')
             form.image.data.save(f"temp/{filename_img}")
 
+
+
             s3_client = boto3.client('s3', aws_access_key_id=app.config.get('AWS_ACCESS_KEY_ID'), aws_secret_access_key=app.config.get('AWS_SECRET_ACCESS_KEY'))
             # upload image
-            s3_client.upload_fileobj(open(f'temp/{filename_img}', 'rb'), app.config.get('AWS_S3_BUCKET'), 'courses/categories/' + filename_img, ExtraArgs={ 'ACL': 'public-read' })
+            s3_client.upload_fileobj(open(f'temp/{filename_img}', 'rb'), app.config.get('AWS_S3_BUCKET'), 'courses/categories/' + filename_img, ExtraArgs={'ContentType': "image/png", 'ACL': 'public-read' })
 
             c = CourseCategory()
             data = dict(name=form.name.data, icon=form.icon.data, image=filename_img)
@@ -270,19 +286,18 @@ def edit_course_category():
             s3_client = boto3.client('s3', aws_access_key_id=app.config.get('AWS_ACCESS_KEY_ID'), aws_secret_access_key=app.config.get('AWS_SECRET_ACCESS_KEY'))
 
             # upload image
-            s3_client.upload_fileobj(open(f'temp/{form.image.data.filename}', 'rb'), app.config.get('AWS_S3_BUCKET'), 'courses/categories/' + form.image.data.filename, ExtraArgs={ 'ACL': 'public-read' })
+            s3_client.upload_fileobj(open(f'temp/{form.image.data.filename}', 'rb'), app.config.get('AWS_S3_BUCKET'), 'courses/categories/' + form.image.data.filename, ExtraArgs={'ContentType': "image/png", 'ACL': 'public-read' })
 
             c.name = request.form.get('name')
             c.icon = request.form.get('icon')
             c.image = form.image.data.filename
-            db.session.commit()
             os.remove(f'{app.config.get("BASEDIR")}/temp/{form.image.data.filename}')
-            flash('Edited Course Category successfully', 'info')
         else:
             flash('You did not verify an image upload. Please make sure you meant to click the checkbox.', 'warning')
             c.name = request.form.get('name')
             c.icon = request.form.get('icon')
-            db.session.commit()
+        db.session.commit()
+        flash('Edited Course Category successfully', 'info')
         return redirect(url_for('admin.edit_course_category', id=c.id))
     context = {
         'c': c,

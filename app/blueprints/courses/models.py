@@ -59,6 +59,7 @@ class Course(db.Model):
             'slug': self.slug,
             'video': self.video,
             'video_thumbnail': self.video_thumbnail,
+            'learning_objectives': self.learning_objectives,
             'description': self.description,
             'date_created': self.date_created,
             'category': CourseCategory.query.get(self.category_id),

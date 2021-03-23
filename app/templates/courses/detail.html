@@ -28,15 +28,15 @@
                 <div class="top-info">
                     <h2>{{ c.name }}</h2>
                     <ul>
-                        <li>
+                        {# <li>
                             <div class="thumb">
                                 <img src="{{ url_for('static', filename='assets/img/100x100.png') }}" alt="Thumb">
                             </div>
                             <div class="info">
-                                <span>Teacher</span>
+                                <span>Professional</span>
                                 <h5>John Kanel</h5>
                             </div>
-                        </li>
+                        </li> #}
                         <li>
                             <div class="info">
                                 <span>Category</span>
@@ -45,8 +45,9 @@
                         </li>
                         <li>
                             <div class="info">
-                                <span>Last Update</span>
-                                <h5>January 24, 2021</h5>
+                                <span>Date Added</span>
+                                <h5>{{ moment(c.date_created).format("MMMM Do, YYYY") }}</h5>
+                                {# <h5>January 24, 2021</h5> #}
                             </div>
                         </li>
                     </ul>
@@ -62,7 +63,7 @@
                                 <a href="" data-target="#tab2" data-toggle="tab" class="nav-link">Curriculum</a>
                             </li> #}
                             <li class="nav-item">
-                                <a href="" data-target="#tab3" data-toggle="tab" class="nav-link">The Pro</a>
+                                <a href="" data-target="#tab3" data-toggle="tab" class="nav-link">About the Professional</a>
                             </li>
                             <!-- <li class="nav-item">
                                 <a href="" data-target="#tab4" data-toggle="tab" class="nav-link">Reviews</a>
@@ -74,12 +75,12 @@
                                 <p>
                                     {{ c.description }}
                                 </p>
-                                {# <h4>Learning Objectives</h4>
+                                <h4>Learning Objectives</h4>
                                 <ul>
                                     {% for o in c.learning_objectives %}
-                                    <li>Meeting your fitness goals, and leading a healthier lifestyle.</li>
+                                    <li>{{ o.description }}</li>
                                     {% endfor %}
-                                </ul> #}
+                                </ul>
                             </div>
                             {# <div id="tab2" class="tab-pane curriculum fade">
                                 <p>
@@ -421,6 +422,7 @@
                 <!-- End Single Item -->
 
                 <!-- Single Item -->
+                {% if related %}
                 <div class="item related-course">
                     <div class="content">
                         <h4>Related Courses</h4>
@@ -455,6 +457,7 @@
                         </div>
                     </div>
                 </div>
+                {% endif %}
                 <!-- End Single Item -->
                 
             </div>

@@ -4,7 +4,21 @@
 <div class="container-fluid">
     <h1 class="mt-4">Dashboard</h1>
     <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item active">Course Objectives</li>
+        <li class="breadcrumb-item">
+            <a href="{{ url_for('admin.index') }}">
+                Dashboard
+            </a>
+        </li>
+        <li class="breadcrumb-item active">
+            <a href="{{ url_for('admin.courses') }}">
+                Course
+            </a>
+        </li>
+        <li class="breadcrumb-item active">
+            <a href="{{ url_for('admin.edit_course', id=course.id) }}">
+                {{ course.name }}
+            </a>
+        </li>
     </ol>
 
 
@@ -20,6 +34,7 @@
 
                 <form action="{{ url_for('admin.create_objective') }}" method="POST">
                     {{ form.hidden_tag() }}
+                    <input type="hidden" name="course_id" value="{{ course.id }}">
                     <div class="form-group custom-form">
                         {{ form.description(class='form-control', placeholder='Course Objective Description') }}
                         {{ form.submit(class="btn btn-outline-primary") }}

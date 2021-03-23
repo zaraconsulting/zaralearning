@@ -4,7 +4,7 @@
             <div class="row">
                 {% if not courses %}
                 <div style="margin: 0 auto;">
-                    <h2>You have returned no results</h2>
+                    <h4>Oops! It looks like you can't find what you're looking for. We are adding material regulary, so heck back soon!</h4>
                 </div>
                 {% else %}
                 {% for c in courses %}
@@ -12,7 +12,7 @@
                 <div class="single-item col-lg-4 col-md-6">
                     <div class="item">
                         <div class="thumb">
-                            <img src="{{ aws_bucket_image_location }}/{{ c.video_thumbnail }}" alt="{{ c.name }}">
+                            <img class="img-fluid" style="width:350px; height:350px;"  src="{{ aws_bucket_image_location }}/{{ c.video_thumbnail }}" alt="{{ c.name }}" />
                             <div class="course-info">
                                 <ul>
                                     <li><i class="fas fa-clock"></i> 45 Hours</li>
