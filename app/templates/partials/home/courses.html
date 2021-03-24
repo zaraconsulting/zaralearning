@@ -63,7 +63,7 @@
                             <div class="bottom-info">
                                 <div class="course-info">
                                     <ul>
-                                        <li><i class="fas fa-clock"></i> 08:27:00</li>
+                                        <li><i class="fas fa-clock"></i> {{ '{:.0f}'.format(c.video_length) if c.video_length else '0' }}m</li>
                                         <li><i class="fas fa-list-ul"></i> 65</li>
                                         <li><i class="fas fa-user"></i> 6K</li>
                                     </ul>

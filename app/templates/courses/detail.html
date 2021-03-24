@@ -3,7 +3,7 @@
 
 {% block body %}
 <!-- Start Breadcrumb -->
-<div class="breadcrumb-area bg-gray text-center shadow dark text-light bg-cover" style="background-image: url({{ url_for('static', filename='assets/img/2440x1578.png') }});">
+<div class="breadcrumb-area bg-gray text-center shadow dark text-light bg-cover" style="background-image: url(https://zclearning.s3.amazonaws.com/templates/courses/course-detail.jpg)">
     <div class="container">
         <div class="row">
             <div class="col-lg-8 offset-lg-2">
@@ -388,10 +388,10 @@
                         <div class="course-includes">
                             <ul>
                                 <li>
-                                    <i class="fas fa-clock"></i> Duration <span class="float-right">5.7 Hours</span>
+                                    <i class="fas fa-clock"></i> Duration <span class="float-right">{{ '{:.0f}'.format(c.video_length) }}m</span>
                                 </li>
                                 <li>
-                                    <i class="fas fa-sliders-h"></i> Skill level <span class="float-right">All Levels</span>
+                                    <i class="fas fa-sliders-h"></i> Skill level <span class="float-right">{{ c.skill_level.name }}</span>
                                 </li>
                             </ul>
                         </div>

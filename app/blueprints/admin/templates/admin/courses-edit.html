@@ -44,6 +44,10 @@
                                 {{ form.category(class="form-control", value=course.category_id) }}
                             </div>
                             <div class="form-group">
+                                <strong>{{ form.skill_level.label }}</strong>
+                                {{ form.skill_level(class="form-control", value=course.skill_level_id) }}
+                            </div>
+                            <div class="form-group">
                                 <strong>{{ form.video.label }}</strong>
                                 {{ form.video(class='form-control-file', style='margin-bottom:15px;') }}
                                 <div class="form-check">

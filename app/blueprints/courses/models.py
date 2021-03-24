@@ -18,11 +18,21 @@ class CourseLearningObjectives(db.Model):
     def __repr__(self):
         return f'<CourseLearningObjectives: {self.description}>'
 
+class SkillLevel(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String)
+    courses = db.relationship('Course', backref='course', cascade="all,delete", lazy='dynamic')
+
+
 class Course(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    skill_level_id = db.Column(db.Integer, db.ForeignKey('skill_level.id'))
     name = db.Column(db.String)
     video = db.Column(db.String)
     video_thumbnail = db.Column(db.String)
+    icon = db.Column(db.String)
+    # TODO: Make a Video class to keep track of videos
+    video_length = db.Column(db.Float)
     icon = db.Column(db.String)
     description = db.Column(db.Text)
     slug = db.Column(db.String)
@@ -58,7 +68,9 @@ class Course(db.Model):
             'icon': self.icon,
             'slug': self.slug,
             'video': self.video,
+            'skill_level': SkillLevel.query.get(self.skill_level_id),
             'video_thumbnail': self.video_thumbnail,
+            'video_length': self.video_length,
             'learning_objectives': self.learning_objectives,
             'description': self.description,
             'date_created': self.date_created,
@@ -71,7 +83,7 @@ class Course(db.Model):
         return data
 
     def from_dict(self, data):
-        for field in ['name', 'icon', 'video', 'video_thumbnail', 'description', 'category_id']:
+        for field in ['name', 'icon', 'video', 'video_thumbnail', 'skill_level_id', 'video_length', 'description', 'category_id']:
             if field in data:
                 setattr(self, field, data[field])
 
@@ -165,7 +177,7 @@ class CourseCategory(db.Model):
     slug = db.Column(db.String)
     image = db.Column(db.String)
     icon = db.Column(db.String)
-    courses = db.relationship('Course', backref='course', cascade="all,delete", lazy='dynamic')
+    courses = db.relationship('Course', backref='courses', cascade="all,delete", lazy='dynamic')
 
     def slugify(self):
         self.slug = self.name.lower().replace(' ', '-')

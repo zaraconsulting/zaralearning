@@ -15,8 +15,8 @@
                             <img class="img-fluid" style="width:350px; height:350px;"  src="{{ aws_bucket_image_location }}/{{ c.video_thumbnail }}" alt="{{ c.name }}" />
                             <div class="course-info">
                                 <ul>
-                                    <li><i class="fas fa-clock"></i> 45 Hours</li>
-                                    <li><i class="fas fa-list-ul"></i> 345</li>
+                                    <li><i class="fas fa-clock"></i> {{ '{:.0f}'.format(c.video_length) if c.video_length else '0' }} Minutes</li>
+                                    <!-- <li><i class="fas fa-list-ul"></i> 345</li> -->
                                 </ul>
                             </div>
                         </div>

@@ -1,6 +1,6 @@
 from .import bp as admin
 from flask import render_template, redirect, url_for, request, flash, session, current_app as app, jsonify
-from app.blueprints.courses.models import Course, CourseCategory, CourseTag, CourseLearningObjectives
+from app.blueprints.courses.models import Course, CourseCategory, CourseTag, CourseLearningObjectives, SkillLevel
 from app.blueprints.auth.models import Account
 from .forms import AdminEditCourseCategoryForm, AdminCreateCourseCategoryForm, AdminLoginForm, AdminEditUserForm, AdminCreateCourseForm, AdminResetPasswordRequestForm, AdminResetPasswordForm, AdminEditCourseForm, AdminCreateObjective
 from flask_login import current_user, login_user, logout_user
@@ -11,6 +11,7 @@ from datetime import datetime as dt
 from werkzeug.utils import secure_filename
 from botocore.exceptions import ClientError
 from app._helpers import clear_temp_dir
+from moviepy.editor import VideoFileClip
 
 @admin.route('/', methods=['GET'])
 def index():
@@ -106,7 +107,8 @@ def courses():
     if not current_user.is_authenticated:
         return redirect(url_for('admin.login'))
     form = AdminCreateCourseForm()
-    form.category.choices = [(i.id, i.name) for i in CourseCategory.query.order_by(CourseCategory.name).all()]
+    form.category.choices = [(i.id, i.name) for i in CourseCategory.query.all()]
+    form.skill_level.choices = [(i.id, i.name) for i in SkillLevel.query.order_by(SkillLevel.name).all()]
     context = {
         'courses': [i.to_dict() for i in Course.query.all()],
         'form': form
@@ -123,8 +125,10 @@ def edit_course():
         form = AdminEditCourseForm()
         
         form.category.choices = [(i.id, i.name) for i in CourseCategory.query.order_by(CourseCategory.name).all()]
+        form.skill_level.choices = [(i.id, i.name) for i in SkillLevel.query.order_by(SkillLevel.name).all()]
         form.description.data = c.description
         form.category.data = c.category_id
+        form.skill_level.data = c.skill_level_id
         form.tags.data = ', '.join([i.text for i in CourseTag.query.filter_by(course_id=c.id).all()])
 
     if request.method == 'POST':
@@ -133,11 +137,13 @@ def edit_course():
         # Connect to S3 client
         s3_client = boto3.client('s3', aws_access_key_id=app.config.get('AWS_ACCESS_KEY_ID'), aws_secret_access_key=app.config.get('AWS_SECRET_ACCESS_KEY'))
         
-        data = dict(name=form.name.data, icon=form.icon.data, description=form.description.data, category_id=form.category.data)
+        data = dict(name=form.name.data, icon=form.icon.data, description=form.description.data, category_id=form.category.data, skill_level_id=form.skill_level.data)
         if form.video_verify.data:
             form.video.data.save(f"temp/{form.video.data.filename}")
             s3_client.upload_fileobj(open(f'temp/{form.video.data.filename}', 'rb'), app.config.get('AWS_S3_BUCKET'), 'courses/videos/' + form.video.data.filename, ExtraArgs={'ContentType': "video/mp4", 'ACL': 'public-read' })
+            video_length = float(VideoFileClip(f"{app.config.get('BASEDIR')}/temp/{form.video.data.filename}").duration) / 60
             data['video'] = form.video.data.filename
+            data['video_length'] = video_length
             os.remove(f'{app.config.get("BASEDIR")}/temp/{form.video.data.filename}')
         
         if form.video_thumbnail_verify.data:
@@ -182,6 +188,7 @@ def create_course():
             os.mkdir('temp')
         form.image.data.save(f"temp/{filename_img}")
         form.video.data.save(f"temp/{filename_vid}")
+        video_length = float(VideoFileClip(f"{app.config.get('BASEDIR')}/temp/{filename_vid}").duration) / 60
 
         s3_client = boto3.client('s3', aws_access_key_id=app.config.get('AWS_ACCESS_KEY_ID'), aws_secret_access_key=app.config.get('AWS_SECRET_ACCESS_KEY'))
         # upload image
@@ -190,7 +197,7 @@ def create_course():
         s3_client.upload_fileobj(open(f'temp/{filename_vid}', 'rb'), app.config.get('AWS_S3_BUCKET'), 'courses/videos/' + filename_vid, ExtraArgs={ 'ACL': 'public-read', 'ContentType': 'video/mp4' })
 
         course = Course()
-        data = dict(name=form.name.data, icon=form.icon.data, video=filename_vid, video_thumbnail=filename_img, description=form.description.data, category_id=form.category.data)
+        data = dict(name=form.name.data, icon=form.icon.data, video=filename_vid, skill_level_id=form.skill_level.data, video_length=video_length, video_thumbnail=filename_img, description=form.description.data, category_id=form.category.data)
         course.from_dict(data)
         course.save()
 

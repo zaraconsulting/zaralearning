@@ -24,6 +24,7 @@ class AdminCreateCourseForm(FlaskForm):
     video = FileField('Upload Video', validators=[DataRequired()])
     icon = StringField('Icon', validators=[DataRequired()])
     category = SelectField(choices=[], coerce=int)
+    skill_level = SelectField(choices=[], coerce=int)
     submit = SubmitField('Create Course')
 
 # TODO: UNDERNEATH
@@ -35,6 +36,7 @@ class AdminCreateCourseForm(FlaskForm):
 class AdminEditCourseForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
     description = TextAreaField('Description', validators=[DataRequired()])
+    skill_level = SelectField(choices=[], coerce=int)
     icon = StringField('Icon', validators=[DataRequired()])
     video = FileField('Upload Video')
     video_thumbnail = FileField('Upload Video Thumbnail')

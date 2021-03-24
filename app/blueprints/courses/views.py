@@ -3,6 +3,7 @@ from flask import render_template, request, redirect, url_for, current_app as ap
 from app.blueprints.courses.models import Course, CourseCategory, CourseTag
 from app.blueprints.auth.models import Account
 from flask_login import current_user
+from sqlalchemy import or_
 
 @courses.route('/', methods=['POST', 'GET'])
 def index():
@@ -17,12 +18,12 @@ def search():
     page = request.args.get('page', 1, type=int)
     if request.args.get('search') is not None:
         search = request.args.get('search')
-        courses = [c for c in Course.query.paginate(page, app.config.get('POSTS_PER_PAGE'), False).items if search.lower() in c.description.lower() or search.lower() in c.name.lower()]
+        courses = Course.query.filter(or_(Course.description.ilike(f'%{search}%'), Course.name.ilike(f'%{search}%'))).paginate(page, app.config.get('POSTS_PER_PAGE'), False)
     else:
-        courses = Course.query.paginate(page, app.config.get('POSTS_PER_PAGE'), False).items
+        courses = Course.query.paginate(page, app.config.get('POSTS_PER_PAGE'), False)
     next_url = url_for('courses.index', page=courses.next_num) if courses.has_next else None
     prev_url = url_for('courses.index', page=courses.prev_num) if courses.has_prev else None
-    return render_template('courses/index.html', next_url=next_url, prev_url=prev_url, courses=courses)
+    return render_template('courses/index.html', next_url=next_url, prev_url=prev_url, courses=courses.items)
 
 @courses.route('/c')
 def detail():
