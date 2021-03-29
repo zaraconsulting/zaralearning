@@ -4,17 +4,21 @@
             <div class="col-lg-8 offset-lg-2">
                 <div class="site-heading text-center">
                     <h5>Testimonials</h5>
-                    <h2>Coming Soon</h2>
-                    {# <h2>What People say about <br> Our quality.</h2> #}
+                    {% if testimonials %}
+                    <h2>What People say about <br> Our quality.</h2>
+                    {% else %}
+                    {% endif %}
                 </div>
             </div>
         </div>
     </div>
-    {# <div class="container">
+    <div class="container">
         <div class="testimonial-items text-center">
             <div class="row">
                 <div class="col-lg-12">
                     <div class="testimonials-carousel owl-carousel owl-theme">
+                        {% if testimonials %}
+                        {% for t in testimonials %}
                         <!-- Single item -->
                         <div class="item">
                             <div class="icon">
@@ -22,14 +26,13 @@
                             </div>
                             <div class="content">
                                 <p>
-                                    Objection estimable discourse procuring he he remaining on distrusts. Simplicity affronting inquietude for now sympathize age. She meant new their could defer child. 
+                                    {{ t.message }} 
                                 </p>
                                 <div class="rating">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star-half-alt"></i>
+                                {% for s in t.rating %}
+                                <i class="fas fa-star"></i>
+                                {% endfor %}
+                                    {# <i class="fas fa-star-half-alt"></i> #}
                                 </div>
                             </div>
                             <div class="provider">
@@ -37,71 +40,17 @@
                                     <img src="{{ url_for('static', filename='assets/img/100x100.png') }}" alt="Thumb">
                                 </div>
                                 <div class="info">
-                                    <h5>Busel park</h5>
-                                    <span>Student</span>
+                                    <h5>{{ t.name }}</h5>
+                                    <span>{{ t.occupation }}</span>
                                 </div>
                             </div>
                         </div>
                         <!-- End Single item -->
-                        <!-- Single item -->
-                        <div class="item">
-                            <div class="icon">
-                                <i class="flaticon-quotation"></i>
-                            </div>
-                            <div class="content">
-                                <p>
-                                    Objection estimable discourse procuring he he remaining on distrusts. Simplicity affronting inquietude for now sympathize age. She meant new their could defer child. 
-                                </p>
-                                <div class="rating">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star-half-alt"></i>
-                                </div>
-                            </div>
-                            <div class="provider">
-                                <div class="thumb">
-                                    <img src="{{ url_for('static', filename='assets/img/100x100.png') }}" alt="Thumb">
-                                </div>
-                                <div class="info">
-                                    <h5>Jnoes Sari</h5>
-                                    <span>Programmer</span>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- End Single item -->
-                        <!-- Single item -->
-                        <div class="item">
-                            <div class="icon">
-                                <i class="flaticon-quotation"></i>
-                            </div>
-                            <div class="content">
-                                <p>
-                                    Objection estimable discourse procuring he he remaining on distrusts. Simplicity affronting inquietude for now sympathize age. She meant new their could defer child. 
-                                </p>
-                                <div class="rating">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star-half-alt"></i>
-                                </div>
-                            </div>
-                            <div class="provider">
-                                <div class="thumb">
-                                    <img src="{{ url_for('static', filename='assets/img/100x100.png') }}" alt="Thumb">
-                                </div>
-                                <div class="info">
-                                    <h5>Busel park</h5>
-                                    <span>Student</span>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- End Single item -->
+                        {% endfor %}
+                        {% endif %}
                     </div>
                 </div>
             </div>
         </div>
-    </div> #}
+    </div>
 </div>

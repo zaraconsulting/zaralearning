@@ -33,12 +33,10 @@
                         <div class="info">
                             <div class="price-rating">
                                 <div class="rating">
+                                    {% for s in c.reviews.avg.stars %}
                                     <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star-half-alt"></i>
-                                    <span>(245)</span>
+                                    {% endfor %}
+                                    <span>({{ c.reviews.list|length }})</span>
                                 </div>
                                 {# <div class="price">
                                     Free
@@ -49,7 +47,7 @@
                             </h4>
                             <div class="bottom">
                                 <ul>
-                                    <li><i class="fas fa-user"></i> 8K</li>
+                                    <li><i class="fas fa-user"></i> {{ c.viewers.list|length }}</li>
                                 </ul>
                                 <a class="btn btn-theme effect btn-sm" href="{{ url_for('courses.detail', name=c.slug) }}">
                                     Watch

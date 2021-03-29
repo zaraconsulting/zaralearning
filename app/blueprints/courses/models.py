@@ -1,27 +1,14 @@
 from app import db
 from datetime import datetime as dt
+from hashlib import md5
+from statistics import mean
+from app.blueprints.auth.models import Account
 
-# taggers = db.Table(
-#     'taggers',
-#     db.Column('tagger_id', db.Integer, db.ForeignKey('course.id'))
-#     )
 
-class CourseLearningObjectives(db.Model):
+class CourseWatcher(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    description = db.Column(db.String)
+    account_id = db.Column(db.Integer, db.ForeignKey('account.id'))
     course_id = db.Column(db.Integer, db.ForeignKey('course.id'))
-
-    def save(self):
-        db.session.add(self)
-        db.session.commit()
-    
-    def __repr__(self):
-        return f'<CourseLearningObjectives: {self.description}>'
-
-class SkillLevel(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
-    courses = db.relationship('Course', backref='course', cascade="all,delete", lazy='dynamic')
 
 
 class Course(db.Model):
@@ -40,13 +27,6 @@ class Course(db.Model):
     reviews = db.relationship('CourseReview', backref='review', cascade="all,delete", lazy='dynamic')
     tags = db.relationship('CourseTag', backref='tag', cascade="all,delete", lazy='dynamic')
     learning_objectives = db.relationship('CourseLearningObjectives', backref='learning_objects', lazy='dynamic')
-    # tagged = db.relationship(
-    #     'User', secondary=taggers,
-    #     primaryjoin=(taggers.c.tagger_id == id),
-    #     secondaryjoin=(taggers.c.tagged_id == id),
-    #     backref=db.backref('taggers', lazy='dynamic'),
-    #     lazy='dynamic'
-    # )
     category_id = db.Column(db.Integer, db.ForeignKey('course_category.id'))
 
     def slugify(self):
@@ -78,7 +58,16 @@ class Course(db.Model):
             'tags_': CourseTag.query.filter_by(course_id=self.id).all(),
             '_tags': CourseTag.query.filter_by(course_id=self.id).all(),
             'tags': ', '.join([t.text for t in CourseTag.query.filter_by(course_id=self.id).all()]),
-            'reviews': [r.to_dict() for r in CourseReview.query.filter_by(course_id=self.id).all()],
+            'reviews': {
+                'list': [r.to_dict() for r in CourseReview.query.filter_by(course_id=self.id).all()],
+                'avg': {
+                    'value': float(mean([i.rating for i in self.reviews.all() if i.rating])) if self.reviews.all() else float(0),
+                    'stars': range(int(mean([i.rating for i in self.reviews.all() if i.rating]))) if self.reviews.all() else []
+                }
+            },
+            'viewers': {
+                'list': [i for i in CourseWatcher.query.filter_by(course_id=self.id).all()]
+            }
         }
         return data
 
@@ -90,30 +79,68 @@ class Course(db.Model):
     def __repr__(self):
         return f'<Course: {self.name}>'
 
+
+class CourseLearningObjectives(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    description = db.Column(db.String)
+    course_id = db.Column(db.Integer, db.ForeignKey('course.id'))
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+    
+    def __repr__(self):
+        return f'<CourseLearningObjectives: {self.description}>'
+
+class SkillLevel(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String)
+    courses = db.relationship('Course', backref='course', cascade="all,delete", lazy='dynamic')
+
+
+class CourseTestimonials(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String)
+
+
 class CourseReview(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    rating = db.Column(db.Float)
+    rating = db.Column(db.Integer)
+    name = db.Column(db.String)
+    email = db.Column(db.String)
     text = db.Column(db.Text)
+    avatar = db.Column(db.String)
     date_created = db.Column(db.DateTime, default=dt.utcnow)
     course_id = db.Column(db.Integer, db.ForeignKey('course.id', ondelete='CASCADE'))
     comments = db.relationship('ReviewComment', backref='comment', cascade="all,delete", lazy='dynamic')
 
+    def avatar(self, size=80):
+        return f"https://www.gravatar.com/{md5(self.email.lower().encode('utf-8')).hexdigest()}?d=identicon&s={size}"
+
+    def save(self):
+        self.avatar = self.avatar()
+        db.session.add(self)
+        db.session.commit()
+
     def to_dict(self):
         data = {
             'id': self.id,
-            'rating': self.rating,
+            'rating': range(int(self.rating or 5)),
+            'avatar': self.avatar,
+            'name': self.name,
+            'email': self.email,
             'text': self.text,
             'date_created': self.date_created,
             'course': {
                 'id': self.course_id,
                 'name': Course.query.get(self.course_id).name
             },
-            'comments': [c.to_dict() for c in ReviewComment.query.filter_by(review_id=self.id).all()],
+            'comments': [c.to_dict() for c in ReviewComment.query.filter_by(review_id=self.id).order_by(ReviewComment.date_created.desc()).all()],
         }
         return data
 
     def from_dict(self, data):
-        for field in ['rating', 'text', 'date_created', 'course_id']:
+        for field in ['name', 'rating', 'email', 'text', 'course_id']:
             if field in data:
                 setattr(self, field, data[field])
 

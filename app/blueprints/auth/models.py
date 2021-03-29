@@ -13,6 +13,7 @@ class Account(UserMixin, db.Model):
     is_customer = db.Column(db.Boolean, default=False)
     customer_id = db.Column(db.String, unique=True)
     date_created = db.Column(db.DateTime, default=dt.utcnow)
+    # courses_watch
     # role_id = db.Column(db.Integer, db.ForeignKey('role.id'))
     # is_admin = db.Column(db.Boolean, default=0)
     # role_id = db.Column(db.Integer, db.ForeignKey('role.id'), default=Role.query.filter_by(name='User').first())

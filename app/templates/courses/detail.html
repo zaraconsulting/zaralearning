@@ -62,12 +62,12 @@
                             {# <li class="nav-item">
                                 <a href="" data-target="#tab2" data-toggle="tab" class="nav-link">Curriculum</a>
                             </li> #}
-                            <li class="nav-item">
-                                <a href="" data-target="#tab3" data-toggle="tab" class="nav-link">About the Professional</a>
-                            </li>
                             <!-- <li class="nav-item">
-                                <a href="" data-target="#tab4" data-toggle="tab" class="nav-link">Reviews</a>
+                                <a href="" data-target="#tab3" data-toggle="tab" class="nav-link">About the Professional</a>
                             </li> -->
+                            <li class="nav-item">
+                                <a href="" data-target="#tab4" data-toggle="tab" class="nav-link">Reviews</a>
+                            </li>
                         </ul>
                         <div id="tabsContent" class="tab-content">
                             <div id="tab1" class="tab-pane overview fade active show">
@@ -261,15 +261,17 @@
                                 <div class="row">
                                     <div class="col-lg-4">
                                         <div class="avg-ratings">
-                                            <h2>4.9</h2>
+                                            <h2>{{ c.reviews.avg.value }}</h2>
+                                            {% if c.reviews.avg.stars|length > 0 %}
                                             <div class="rating">
+                                                {% for s in c.reviews.avg.stars %}
                                                 <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star-half-alt"></i>
+                                                {% endfor %}
                                             </div>
-                                            1,455 Ratings
+                                            {{ c.reviews.list|length }} Rating{% if c.reviews.list|length != 1 %}s{% endif %}
+                                            {% else %}
+                                            <p>There are no revies yet.</p>
+                                            {% endif %}
                                         </div>
                                     </div>
                                     <div class="col-lg-8 rating-counter">
@@ -303,57 +305,138 @@
                                     </div>
                                 </div>
                                 <div class="rating-provider">
+                            
                                     <!-- Single Item -->
+                                    {% for r in c.reviews.list %}
                                     <div class="single-item">
                                         <div class="thumb">
-                                            <img src="{{ url_for('static', filename='assets/img/800x800.png') }}" alt="Thumb">
+                                            <img src="https://cdn4.iconfinder.com/data/icons/small-n-flat/24/user-alt-512.png" alt="Thumb">
                                         </div>
                                         <div class="info">
                                             <div class="title">
-                                                <h4>Mira Jone</h4>
-                                                <span>15 December, 2020</span>
+                                                <h4>{{ r.name }}</h4>
+                                                <span>{{ moment(r.date_created).format("MMMM Do, YYYY") }}</span>
                                             </div>
                                             <div class="rating">
+                                                {% for s in r.rating %}
                                                 <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star-half-alt"></i>
+                                                {% endfor %}
                                             </div>
                                             <div class="content">
                                                 <p>
-                                                    Agreeable law unwilling sir deficient curiosity instantly. Easy mind life fact with see has bore ten. Parish any chatty can elinor direct for former. Up as meant widow equal an share least. 
+                                                    Agreeable law unwilling sir deficient curiosity instantly. Easy mind life fact with see has bore
+                                                    ten. Parish any chatty can elinor direct for former. Up as meant widow equal an share least.
                                                 </p>
+                                            </div>
+                                            <div class="comments-info">
+                                                <a href="#course-comment-reply-header" class="course-comment-reply"><i
+                                                        class="comment-reply fa fa-reply"></i>Reply</a>
                                             </div>
                                         </div>
                                     </div>
+                                    {% endfor %}
                                     <!-- Single Item -->
-                                    <!-- Single Item -->
-                                    <div class="single-item">
-                                        <div class="thumb">
-                                            <img src="{{ url_for('static', filename='assets/img/800x800.png') }}" alt="Thumb">
-                                        </div>
-                                        <div class="info">
-                                            <div class="title">
-                                                <h4>Mira Jone</h4>
-                                                <span>15 December, 2020</span>
-                                            </div>
-                                            <div class="rating">
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star-half-alt"></i>
-                                            </div>
-                                            <div class="content">
-                                                <p>
-                                                    Agreeable law unwilling sir deficient curiosity instantly. Easy mind life fact with see has bore ten. Parish any chatty can elinor direct for former. Up as meant widow equal an share least. 
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- Single Item -->
+                            
                                 </div>
+                            
+                                <!-- Start Blog Comment -->
+                                <div class="blog-comments">
+                                    <div class="comments-area">
+                                        <div class="comments-title">
+                                            <!-- <h4>
+                                                {{ c.reviews.list|length }} comments
+                                            </h4> -->
+                                            <!-- <div class="comments-list">
+                                                <div class="commen-item">
+                                                    <div class="avatar">
+                                                        <img src="assets/img/800x800.png" alt="Author">
+                                                    </div>
+                                                    <div class="content">
+                                                        <div class="title">
+                                                            <h5>Jonathom Doe</h5>
+                                                            <span>28 Aug, 2020</span>
+                                                        </div>
+                                                        <p>
+                                                            Delivered ye sportsmen zealously arranging frankness estimable as. Nay any article
+                                                            enabled musical shyness yet sixteen yet blushes. Entire its the did figure wonder off.
+                                                        </p>
+                                                        <div class="comments-info">
+                                                            <a href=""><i class="fa fa-reply"></i>Reply</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="commen-item reply">
+                                                    <div class="avatar">
+                                                        <img src="assets/img/800x800.png" alt="Author">
+                                                    </div>
+                                                    <div class="content">
+                                                        <div class="title">
+                                                            <h5>Spart Lee</h5>
+                                                            <span>17 Feb, 2020</span>
+                                                        </div>
+                                                        <p>
+                                                            Delivered ye sportsmen zealously arranging frankness estimable as. Nay any article
+                                                            enabled musical shyness yet sixteen yet blushes. Entire its the did figure wonder off.
+                                                        </p>
+                                                        <div class="comments-info">
+                                                            <a href=""><i class="fa fa-reply"></i>Reply</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div> -->
+                                        </div>
+                                    </div>
+                                    <div style="margin-top: 40px;" class="review-area">
+                                        <div class="comments-form">
+                                            <div class="title">
+                                                <h4 id="course-comment-reply-header">Leave a comment</h4>
+                                            </div>
+                                            <form id="course-comment-form" class="contact-comments" method="POST"
+                                                action="{{ url_for('courses.create_course_review', course=c.slug) }}">
+                                                <input type="hidden" name="course_id" value='{{ c.id }}'>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <!-- Name -->
+                                                            <input name="name" class="form-control" placeholder="Name *" type="text">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <!-- Email -->
+                                                            <input name="email" class="form-control" placeholder="Email *" type="email">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <select class="form-control" name="rating">
+                                                                <option selected disabled>Please rate this course</option>
+                                                                <option>1</option>
+                                                                <option>2</option>
+                                                                <option>3</option>
+                                                                <option>4</option>
+                                                                <option>5</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <div class="form-group comments">
+                                                            <!-- Comment -->
+                                                            <textarea class="form-control" placeholder="Comment" name='text'></textarea>
+                                                        </div>
+                                                        <div class="form-group full-width submit">
+                                                            <button type="submit">
+                                                                Post Comment
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- End Comments Form -->
+                            
                             </div>
                         </div>
                     </div>
@@ -388,15 +471,15 @@
                         <div class="course-includes">
                             <ul>
                                 <li>
-                                    <i class="fas fa-clock"></i> Duration <span class="float-right">{{ '{:.0f}'.format(c.video_length) }}m</span>
+                                    <i class="fas fa-clock"></i> Duration <span class="float-right">{{ '{:.0f}'.format(c.video_length) if c.video_length else '0' }}m</span>
                                 </li>
                                 <li>
-                                    <i class="fas fa-sliders-h"></i> Skill level <span class="float-right">{{ c.skill_level.name }}</span>
+                                    <i class="fas fa-sliders-h"></i> Skill level <span class="float-right">{{ c.skill_level.name if c.skill_level else 'Novice' }}</span>
                                 </li>
                             </ul>
                         </div>
                         {% if current_user.is_authenticated and current_user.is_customer %}
-                        <a class="btn btn-theme effect btn-sm popup-youtube" href="{{ c.video }}">Watch</a>
+                        <a class="btn btn-theme effect btn-sm popup-youtube" href="{{ aws_bucket_video_location }}/{{ c.video }}">Watch</a>
                         {% elif not current_user.is_authenticated %}
                         <a class="btn btn-theme effect btn-sm" href="{{ url_for('auth.login') }}">Log In</a>
                         {% else %}
@@ -409,14 +492,27 @@
                 <!-- Single Item -->
                 {% if c.tags_ %}
                 <div class="item course-category">
-                    <div class="content">
+                    <div class="sidebar-item tags">
+                        <div class="title">
+                            <h4>Tags</h4>
+                        </div>
+                        <div class="sidebar-info">
+                            <ul>
+                                {% for t in c.tags_ %}
+                                    <li style="display:unset"><a style="text-transform:unset" href="{{ url_for('courses.tags', name=t.text) }}">{{ t.text|lower }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+
+                    {# <div class="content">
                         <h4>Search by Tags</h4>
                         <ul>
                             {% for t in c.tags_ %}
-                                <a href="{{ url_for('courses.tags', name=t.text) }}" style="margin-right:10px;">{{ t.text }}</a>
+                                <a href="{{ url_for('courses.tags', name=t.text) }}">{{ t.text }}</a>
                             {% endfor %}
                         </ul>
-                    </div>
+                    </div> #}
                 </div>
                 {% endif %}
                 <!-- End Single Item -->
@@ -440,16 +536,14 @@
                                             <a href="{{ url_for('courses.detail', name=r.slug) }}">{{ r.name }}</a>
                                         </h5>
                                         <div class="rating">
+                                            {% for s in r.reviews.avg.stars %}
                                             <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star-half-alt"></i>
-                                            <span>4.5 (23k)</span>
+                                            {% endfor %}
+                                            <span>{{ r.reviews.avg.value }} ({{ r.reviews.list|length }})</span>
                                         </div>
-                                        <div class="meta">
+                                        <!-- <div class="meta">
                                             <i class="fas fa-user"></i> By <a href="#">Spany Paul</a> 
-                                        </div>
+                                        </div> -->
                                     </div>
                                 </div>
                             </div>
@@ -495,5 +589,41 @@
                 })
         })
     })
+</script>
+<script>
+    $('.popup-youtube').each((idx, e) => {
+        $(e).on('click', e => {
+            // e.preventDefault();
+            fetch("{{ url_for('courses.check_viewership', course=c.id) }}", {
+                method: 'POST',
+                mode: 'cors',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ user: "{{ current_user }}" })
+            })
+            .then(res => res.json)
+            .then(d => console.log(d))
+        })
+    })
+
+    // var reviewForm = $('#course-comment-form');
+
+    // $('.course-comment-reply').each((idx, e) => {
+    //     $(e).on('click', () => {
+    //         reviewForm.attr('id', "{{ url_for('courses.create_course_review', id=c.id) }}")
+    //     })
+    // })
+
+    // reviewForm.on('submit', async (e) => {
+    //     // e.preventDefault();
+    //     await fetch("{{ url_for('courses.create_course_review', id=c.id) }}", {
+    //         mode: 'cors',
+    //         method: 'POST',
+    //         headers: { 'Content-Type': 'application/json' },
+    //         body: JSON.stringify({ data: reviewForm.serializeArray() })
+    //     }).then(res => res.json()).then(() => reviewForm.submit())
+        
+    // });
 </script>
 {% endblock scripts %}
