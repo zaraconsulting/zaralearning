@@ -54,7 +54,7 @@ def tags():
     for c in Course.query.all():
         if tag in [i.text for i in c.tags.all()]:
             courses.append(c)
-    return render_template('courses/index.html', courses=courses)
+    return render_template('courses/index.html', courses=[c.to_dict() for c in courses])
 
 @courses.route('/comment', methods=['POST'])
 def create_course_review():
