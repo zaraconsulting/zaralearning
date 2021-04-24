@@ -102,6 +102,16 @@ def create_objective():
     return render_template('admin/objective.html', form=form, course=Course.query.get(request.args.get('id')).to_dict())
 
 
+@admin.route('/objective/delete', methods=['GET', 'POST'])
+def delete_objective():
+    if request.args:
+        o = CourseLearningObjectives.query.get(request.args.get('objective_id'))
+        if o is not None:
+            o.delete()
+        flash('Course Learning Objective successfully delete.', 'success')
+        return redirect(url_for('admin.edit_course', id=request.args.get('course_id')))
+
+
 @admin.route('/courses', methods=['GET'])
 def courses():
     if not current_user.is_authenticated:

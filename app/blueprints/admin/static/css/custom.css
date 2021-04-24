@@ -9,3 +9,14 @@
 .video-play-button:after {
     background:  unset;
 }
+
+.course-details-area .main-content .tab-content .reviews .rating-counter ul li .rating-bar {
+    background: #e7e7e7 none repeat scroll 0 0;
+    width: 100%;
+}
+
+.course-details-area .main-content .tab-content .reviews .rating-counter ul li .rating-bar .rating-bar-progress {
+    background: #ffb606;
+    width: 0%;
+    height: 7px;
+}

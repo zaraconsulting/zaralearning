@@ -86,7 +86,7 @@
                             <hr />
                             {% for o in course.learning_objectives %}
                                 <li class="list-item">
-                                    {{ o.description }}
+                                    {{ o.description }} <span class="float-right"> <a href="{{ url_for('admin.delete_objective', course_id=course.id, objective_id=o.id) }}">Delete</a> </span>
                                 </li>
                             {% endfor %}
                         </ul>

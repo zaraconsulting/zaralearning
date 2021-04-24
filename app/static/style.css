@@ -5044,7 +5044,7 @@ body,
   min-height: inherit;
 }
 
-.course-details-area .main-content .tab-content .reviews .rating-counter ul li:first-child .rating-bar {
+.course-details-area .main-content .tab-content .reviews .rating-counter ul li .rating-bar {
   background: #ffb606 none repeat scroll 0 0;
 }
 

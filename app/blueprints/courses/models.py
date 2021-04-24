@@ -62,8 +62,9 @@ class Course(db.Model):
                 'list': [r.to_dict() for r in CourseReview.query.filter_by(course_id=self.id).all()],
                 'avg': {
                     'value': float(mean([i.rating for i in self.reviews.all() if i.rating])) if self.reviews.all() else float(0),
-                    'stars': range(int(mean([i.rating for i in self.reviews.all() if i.rating]))) if self.reviews.all() else []
-                }
+                    'stars': range(int(mean([i.rating for i in self.reviews.all() if i.rating]))) if self.reviews.all() else [],
+                },
+                'breakdown': sorted([(i, [i.rating for i in self.reviews.all() if i.rating].count(i), [i.rating for i in self.reviews.all() if i.rating].count(i) / len([r.to_dict() for r in CourseReview.query.filter_by(course_id=self.id).all()]) if len([r.to_dict() for r in CourseReview.query.filter_by(course_id=self.id).all()]) != 0 else 0, len([r.to_dict() for r in CourseReview.query.filter_by(course_id=self.id).all()])) for i in range(1, 6)], reverse=True),
             },
             'viewers': {
                 'list': [i for i in CourseWatcher.query.filter_by(course_id=self.id).all()]
@@ -75,6 +76,7 @@ class Course(db.Model):
         for field in ['name', 'icon', 'video', 'video_thumbnail', 'skill_level_id', 'video_length', 'description', 'category_id']:
             if field in data:
                 setattr(self, field, data[field])
+            self.slugify()
 
     def __repr__(self):
         return f'<Course: {self.name}>'
@@ -87,6 +89,10 @@ class CourseLearningObjectives(db.Model):
 
     def save(self):
         db.session.add(self)
+        db.session.commit()
+
+    def delete(self):
+        db.session.delete(self)
         db.session.commit()
     
     def __repr__(self):

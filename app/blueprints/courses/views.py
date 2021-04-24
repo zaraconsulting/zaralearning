@@ -45,7 +45,7 @@ def category():
     page = request.args.get('page', 1, type=int)
     cat = CourseCategory.query.filter_by(slug=request.args.get('name')).first()
     courses = Course.query.filter_by(category_id=cat.id).paginate(page, app.config.get('POSTS_PER_PAGE'), False).items
-    return render_template('courses/index.html', courses=courses)
+    return render_template('courses/index.html', courses=[c.to_dict() for c in courses])
 
 @courses.route('/tags')
 def tags():

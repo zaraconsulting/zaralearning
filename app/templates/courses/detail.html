@@ -276,31 +276,18 @@
                                     </div>
                                     <div class="col-lg-8 rating-counter">
                                         <ul>
-                                            <li>
-                                                <span>5 Star</span>
-                                                <span>13</span>
-                                                <div class="rating-bar"></div>
-                                            </li>
-                                            <li>
-                                                <span>4 Star</span>
-                                                <span>1</span>
-                                                <div class="rating-bar"></div>
-                                            </li>
-                                            <li>
-                                                <span>3 Star</span>
-                                                <span>0</span>
-                                                <div class="rating-bar"></div>
-                                            </li>
-                                            <li>
-                                                <span>2 Star</span>
-                                                <span>1</span>
-                                                <div class="rating-bar"></div>
-                                            </li>
-                                            <li>
-                                                <span>1 Star</span>
-                                                <span>0</span>
-                                                <div class="rating-bar"></div>
-                                            </li>
+                                        {% for s in c.reviews.breakdown %}
+                                        <li>
+                                            <span>{{ s[0] }} Star{% if s[0]!=1 %}s{% endif %}</span>
+                                            <span>{{ s[1] }}</span>
+                                            <div class="rating-bar">
+                                                <div style="border-radius: 30px; height: 7px;" class="progress">
+                                                    <div style="background: #ffb606; border-radius: 30px; width: {{ s[2]*100 }}%" class="progress-bar" role="progressbar" aria-valuenow="{{ s[2] }}" aria-valuemin="0" aria-valuemax="{{ c.reviews.list|length }}"></div>
+                                                </div>
+                                                <!-- <div class="rating-bar-progress"></div> -->
+                                            </div>
+                                        </li>
+                                        {% endfor %}
                                         </ul>
                                     </div>
                                 </div>
@@ -324,14 +311,13 @@
                                             </div>
                                             <div class="content">
                                                 <p>
-                                                    Agreeable law unwilling sir deficient curiosity instantly. Easy mind life fact with see has bore
-                                                    ten. Parish any chatty can elinor direct for former. Up as meant widow equal an share least.
+                                                    {{ r.text }}
                                                 </p>
                                             </div>
-                                            <div class="comments-info">
+                                            <!-- <div class="comments-info">
                                                 <a href="#course-comment-reply-header" class="course-comment-reply"><i
                                                         class="comment-reply fa fa-reply"></i>Reply</a>
-                                            </div>
+                                            </div> -->
                                         </div>
                                     </div>
                                     {% endfor %}

@@ -12,7 +12,7 @@
                 <div class="single-item col-lg-4 col-md-6">
                     <div class="item">
                         <div class="thumb">
-                            <img class="img-fluid" style="width:350px; height:350px;"  src="{{ aws_bucket_image_location }}/{{ c.video_thumbnail }}" alt="{{ c.name }}" />
+                            <img class="img-fluid" style="width: 100%; height:233px;"  src="{{ aws_bucket_image_location }}/{{ c.video_thumbnail }}" alt="{{ c.name }}" />
                             <div class="course-info">
                                 <ul>
                                     <li><i class="fas fa-clock"></i> {{ '{:.0f}'.format(c.video_length) if c.video_length else '0' }} Minutes</li>
@@ -33,7 +33,7 @@
                         <div class="info">
                             <div class="price-rating">
                                 <div class="rating">
-                                    {% for s in c.reviews.avg.stars %}
+                                    {% for s in c.reviews['avg']['stars'] %}
                                     <i class="fas fa-star"></i>
                                     {% endfor %}
                                     <span>({{ c.reviews.list|length }})</span>
@@ -42,7 +42,7 @@
                                     Free
                                 </div> #}
                             </div>
-                            <h4>
+                            <h4 style="height: 48px;">
                                 <a href="{{ url_for('courses.detail', name=c.slug) }}">{{ c.name }}</a>
                             </h4>
                             <div class="bottom">
