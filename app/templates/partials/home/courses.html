@@ -32,7 +32,9 @@
                 <div class="single-item col-lg-4 col-md-6">
                     <div class="item">
                         <div class="thumb">
-                            <img style="width: 100%; height:233px;" src="{{ aws_bucket_image_location }}/{{ c.video_thumbnail }}" alt="Thumb">
+                            <a href="{{ url_for('courses.detail', name=c.slug) }}">
+                                <img style="width: 100%; height:233px;" src="{{ aws_bucket_image_location }}/{{ c.video_thumbnail }}" alt="{{ c.name }}">
+                            </a>
                         </div>
                         <div class="info">
                             <!-- <div class="top-info">

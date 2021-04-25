@@ -24,7 +24,7 @@ def search():
         courses = Course.query.paginate(page, app.config.get('POSTS_PER_PAGE'), False)
     next_url = url_for('courses.index', page=courses.next_num) if courses.has_next else None
     prev_url = url_for('courses.index', page=courses.prev_num) if courses.has_prev else None
-    return render_template('courses/index.html', next_url=next_url, prev_url=prev_url, courses=courses.items)
+    return render_template('courses/index.html', next_url=next_url, prev_url=prev_url, courses=[c.to_dict() for c in courses.items])
 
 @courses.route('/c')
 def detail():
@@ -63,7 +63,7 @@ def create_course_review():
     c = CourseReview()
     c.from_dict(request.form)
     c.save()
-    return redirect(url_for('courses.detail', name=Course.query.filter_by(slug=request.args.get('course')).first().slug))
+    return redirect(url_for('courses.detail', name=Course.query.filter_by(slug=request.args.get('course')).first().slug).to_dict())
 
 @courses.route('/viewership', methods=['POST'])
 def check_viewership():

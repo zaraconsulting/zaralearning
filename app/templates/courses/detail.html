@@ -297,7 +297,9 @@
                                     {% for r in c.reviews.list %}
                                     <div class="single-item">
                                         <div class="thumb">
-                                            <img src="https://cdn4.iconfinder.com/data/icons/small-n-flat/24/user-alt-512.png" alt="Thumb">
+                                            <a href="{{ url_for('courses.detail', name=c.slug) }}">
+                                                <img src="https://cdn4.iconfinder.com/data/icons/small-n-flat/24/user-alt-512.png" alt="{{ c.name }}">
+                                            </a>
                                         </div>
                                         <div class="info">
                                             <div class="title">
