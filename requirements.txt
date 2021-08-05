@@ -33,11 +33,9 @@ jmespath==0.10.0
 jwt==1.2.0
 Mako==1.1.4
 MarkupSafe==1.1.1
-moviepy==1.0.3
 oauthlib==3.1.0
 packaging==20.9
 Pillow==8.1.2
-proglog==0.1.9
 protobuf==3.15.8
 psycopg2-binary==2.8.6
 pyasn1==0.4.8

@@ -48,7 +48,8 @@ def subscribe():
                 }
             ],
             mode='subscription',
-            success_url=f'{app.config.get("HOME_URL")}?session_id={"CHECKOUT_SESSION_ID"}',
+            success_url=request.referrer,
+            # success_url=f'{app.config.get("HOME_URL")}?session_id={"CHECKOUT_SESSION_ID"}',
             cancel_url=f'{app.config.get("HOME_URL")}?success',
         )
         return jsonify({'sessionId': checkout_session.id})

@@ -1,4 +1,4 @@
-.custom-form input, .form-check  {
+.custom-form input, .form-check {
     margin-right: 15px;
 }
 
@@ -7,7 +7,7 @@
 }
 
 .video-play-button:after {
-    background:  unset;
+    background: unset;
 }
 
 .course-details-area .main-content .tab-content .reviews .rating-counter ul li .rating-bar {

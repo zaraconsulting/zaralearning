@@ -71,7 +71,7 @@
                             </td>
                             <td>{{ c.id }}</td>
                             <td>{{ c.name }}</td>
-                            <td>{{ c.icon }}</td>
+                            <td><i class="fa fa-{{ c.icon }}"></i></td>
                             <td style="text-align: center;">
                                 <span class="delete-icon">
                                     <a href="{{ url_for('admin.delete_course_category', id=c.id) }}">

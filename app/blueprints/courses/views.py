@@ -63,7 +63,7 @@ def create_course_review():
     c = CourseReview()
     c.from_dict(request.form)
     c.save()
-    return redirect(url_for('courses.detail', name=Course.query.filter_by(slug=request.args.get('course')).first().slug).to_dict())
+    return redirect(url_for('courses.detail', name=Course.query.filter_by(slug=request.args.get('course')).first().slug))
 
 @courses.route('/viewership', methods=['POST'])
 def check_viewership():

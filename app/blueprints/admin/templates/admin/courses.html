@@ -99,7 +99,7 @@ createa{% extends 'admin/layout.html' %}
                                 </td>
                                 <td>{{ c.id }}</td>
                                 <td>{{ c.name }}</td>
-                                <td>{{ c.icon }}</td>
+                                <td><i class="fa fa-{{ c.icon }}"></i></td>
                                 <td>{{ c.category.name }}</td>
                                 <td>{{ c.description }}</td>
                                 <td style="text-align: center;">
